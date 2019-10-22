@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "operatorsAliases": false,
+    "database": "peru",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "peru",
+    "password": "Peru2019",
+    "operatorsAliases": false,
+    "database": "peru",
+    "host": "50.63.166.215",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "peru",
+    "password": "Peru2019",
+    "operatorsAliases": false,
+    "database": "peru",
+    "host": "50.63.166.215",
+    "dialect": "mysql"
+  }
+}
