@@ -8,14 +8,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      usuarioId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Usuarios',
+          Key: 'id',
+          as: 'usuarioId'
+        }
+      },
       nombre: {
         type: Sequelize.STRING
       },
+      tipo:{
+        type: Sequelize.ENUM('Standar', 'Supervisado', 'Premium')  
+      },
       descripcion: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       foto: {
         type: Sequelize.STRING
@@ -29,6 +41,9 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deletedAt: {
         type: Sequelize.DATE
       }
     });

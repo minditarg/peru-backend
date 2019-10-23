@@ -1,24 +1,36 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Comments', {
+    return queryInterface.createTable('Servicios', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
+      nombre: {
         type: Sequelize.STRING
       },
-      userId: {
+      categoriaId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
-          model: 'Users',
+          model: 'Categorias',
           Key: 'id',
-          as: 'userId'
+          as: 'categoriaId'
         }
+      },
+      proveedorId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Proveedors',
+          Key: 'id',
+          as: 'proveedorId'
+        }
+      },
+      descripcion: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -27,10 +39,13 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      deletedAt: {
+        type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Comments');
+    return queryInterface.dropTable('Servicios');
   }
 };
