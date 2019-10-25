@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Usuarios', {
+    return queryInterface.createTable('Servicios', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,26 +11,17 @@ module.exports = {
       nombre: {
         type: Sequelize.STRING
       },
-      apellido: {
-        type: Sequelize.STRING
+      descripcion: {
+        type: Sequelize.TEXT
       },
-      password: {
-        type: Sequelize.STRING
-      },
-      token: {
-        type: Sequelize.STRING
-      },
-      provider: {
-        type: Sequelize.ENUM('Local', 'Facebook', 'Google')  
-      },
-      providerId: {
-        type: Sequelize.STRING
-      },
-      email: {
-        type: Sequelize.STRING
-      },
-      foto: {
-        type: Sequelize.STRING
+      categoriaId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Categorias',
+          Key: 'id',
+          as: 'categoriaId'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -46,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Usuarios');
+    return queryInterface.dropTable('Servicios');
   }
 };

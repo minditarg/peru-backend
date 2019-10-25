@@ -1,7 +1,7 @@
 const users = require('./users');
-const comments = require('./comments');
+const proveedors = require('./proveedor');
 
 module.exports = {
     users,
-    comments
+    proveedors
 }

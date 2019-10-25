@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start:dev": "nodemon --watch .env --watch app.js --watch bin ./bin/www --watch controller --watch db --watch routes --watch core --watch config",
+    "start:dev": "nodemon --watch .env --watch app.js --watch bin ./bin/www --watch controller --watch db --watch routes --watch core --watch config --watch controllers",
     "db": "sequelize init",
     "db:migrate": "sequelize db:migrate",
     "test": "mocha"
