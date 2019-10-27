@@ -1,7 +1,10 @@
 const users = require('./users');
-const proveedors = require('./proveedor');
-
+const servicios = require('./servicios');
+const categorias = require('./categorias');
+const proveedores = require('./proveedores');
 module.exports = {
     users,
-    proveedors
+    servicios,
+    categorias,
+    proveedores
 }

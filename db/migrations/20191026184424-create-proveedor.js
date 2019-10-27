@@ -1,14 +1,30 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Categorias', {
+    return queryInterface.createTable('Proveedors', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      tipo: {
+        type: Sequelize.ENUM('Standar', 'Supervisado', 'Premium'),
+        defaultValue: 'Standar'
+      },
       nombre: {
+        type: Sequelize.STRING
+      },
+      descripcion: {
+        type: Sequelize.TEXT
+      },
+      telefono: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      foto: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -23,8 +39,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Categorias');
+    return queryInterface.dropTable('Proveedors');
   }
 };

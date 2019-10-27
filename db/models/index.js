@@ -34,4 +34,8 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+Sequelize.Validator.notNull = function (item) { 
+  return !this.isNull(item);
+};
+
 module.exports = db;

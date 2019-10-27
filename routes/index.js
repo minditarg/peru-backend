@@ -1,7 +1,10 @@
 
 const userController = require('../controllers').users
-const commentController = require('../controllers').comments
-const proveedorController = require('../controllers').proveedors
+
+const serviciosController = require('../controllers').servicios
+const categoriasController = require('../controllers').categorias
+const proveedoresController = require('../controllers').proveedores
+
 
 module.exports = (app) => {
   app.post('/api/users', userController.create);
@@ -11,13 +14,17 @@ module.exports = (app) => {
   app.put('/api/users/:userId', userController.update);
   app.delete('/api/users/:userId', userController.destroy);
 
-  app.get('/api/proveedores', proveedorController.getByTipo);
-  
-  app.get('/api/servicios', serviciosController.getAll);
+  app.get('/api/servicios', serviciosController.list);
   app.post('/api/servicios', serviciosController.create);
-
+  app.delete('/api/servicios/:id', serviciosController.destroy);
     
-  app.get('/api/categorias', categoriasController.getAll);
+  app.get('/api/categorias', categoriasController.list);
   app.post('/api/categorias', categoriasController.create);
+  app.delete('/api/categorias/:id', categoriasController.destroy);
+
+  
+  app.get('/api/proveedores', proveedoresController.list);
+  app.post('/api/proveedores', proveedoresController.create);
+  app.delete('/api/proveedores/:id', proveedoresController.destroy);
 }
 /* GET home page. */

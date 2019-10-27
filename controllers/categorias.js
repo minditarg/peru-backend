@@ -1,24 +1,24 @@
 const categoria = require('../db/models').Categoria;
 const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
-    create(req, res) {
+    create(req, res) { 
         return categoria
         .create({
             nombre: req.body.nombre,
         })
         .then(categoria => res.status(201).json(ResponseFormat.build(
-            user,
-            "Categoria Create Successfully",
+            categoria,
+            "Categoría creada correctamente",
             201,
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
-            error,
-            "Something went wrong when create Categoria",
+            error.message,
+            "Ocurrió un error cuando se creaba la Categoría",
             "error"
         )))
     },
-    getAll (req, res) {
+    list (req, res) {
         return categoria
         .findAll({
         })
@@ -27,7 +27,7 @@ module.exports = {
                 return res.status(404).json(
                     ResponseFormat.build(
                         {},
-                        "No se encontraron categorias",
+                        "No se encontraron Categorías",
                         404,
                         "error"
                     )
@@ -37,7 +37,7 @@ module.exports = {
             return res.status(200).json(
                 ResponseFormat.build(
                     categoria,
-                    "Listado de categorias correctamente",
+                    "Listado de Categorías",
                     200,
                     "success"
                 )
@@ -45,11 +45,46 @@ module.exports = {
         })
         .catch(error => res.status(500).json(
             ResponseFormat.error(
-                error,
-                "Ocurrio un error al devolver el listado de categorias",
+                error.message,
+                "Ocurrio un error al devolver el listado de Categorías",
                 500,
                 "error"
             )
         ));
+    },
+    destroy (req, res) {
+        return categoria
+        .findById(req.params.id)
+        .then(categoria => {
+            if(!categoria) {
+                return res.status(404).json(
+                    ResponseFormat.error(
+                        "No se encuentra la categoría",
+                        "Ocurrió un error cuando se eliminaba la Categoría",
+                        404,
+                        "error"
+                    )
+                );
+            }
+
+            return categoria
+            .destroy()
+            .then(() => res.status(200).json(
+               ResponseFormat.build(
+                 {},
+                 "Categoría eliminada correctamente",
+                 200,
+                 "success"
+               )
+            ))
+            .catch(error => res.status(500).json(
+                ResponseFormat.error(
+                    error.message,
+                    "Ocurrió un error cuando se eliminaba la Categoría",
+                    500,
+                    "error"
+                )
+            ));
+        });
     }
 }
