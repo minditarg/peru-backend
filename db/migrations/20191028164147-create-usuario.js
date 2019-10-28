@@ -1,33 +1,33 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Proveedors', {
+    return queryInterface.createTable('Usuarios', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tipo: {
-        type: Sequelize.ENUM('Standar', 'Supervisado', 'Premium'),
-        defaultValue: 'Standar'
-      },
       nombre: {
-        type: Sequelize.STRING
-      },
-      descripcion: {
-        type: Sequelize.TEXT
-      },
-      direccion: {
-        type: Sequelize.TEXT
-      },
-      telefono: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       email: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      password: {
         type: Sequelize.STRING
       },
-      foto: {
+      provider: {
+        type: Sequelize.ENUM('Local', 'Facebook', 'Google')  
+      },
+      providerId: {
+        type: Sequelize.STRING
+      },
+      avatar: {
+        type: Sequelize.STRING
+      },
+      token: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -42,9 +42,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Proveedors');
+    return queryInterface.dropTable('Usuarios');
   }
 };

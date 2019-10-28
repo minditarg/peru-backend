@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     descripcion: DataTypes.TEXT,
+    direccion: DataTypes.STRING,
     tipo: {
       type: DataTypes.ENUM('Standar', 'Supervisado', 'Premium'),
       defaultValue: 'Standar'
@@ -46,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'proveedorId',
       as: 'servicios'
     });
+    Proveedor.belongsTo(models.Usuario);
   };
   return Proveedor;
 };

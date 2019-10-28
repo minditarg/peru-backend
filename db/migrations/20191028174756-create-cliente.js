@@ -1,34 +1,27 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Proveedors', {
+    return queryInterface.createTable('Clientes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tipo: {
-        type: Sequelize.ENUM('Standar', 'Supervisado', 'Premium'),
-        defaultValue: 'Standar'
-      },
-      nombre: {
-        type: Sequelize.STRING
-      },
-      descripcion: {
-        type: Sequelize.TEXT
-      },
-      direccion: {
-        type: Sequelize.TEXT
-      },
       telefono: {
         type: Sequelize.STRING
       },
-      email: {
+      direccion: {
         type: Sequelize.STRING
       },
-      foto: {
-        type: Sequelize.STRING
+      usuarioId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Usuarios',
+          Key: 'id',
+          as: 'usuarioId'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -42,9 +35,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Proveedors');
+    return queryInterface.dropTable('Clientes');
   }
 };

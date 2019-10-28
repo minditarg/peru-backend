@@ -2,6 +2,7 @@ const proveedor = require('../db/models').Proveedor;
 const servicios = require('../db/models').Servicio;
 const db = require('../db/models').db;
 const ResponseFormat = require('../core').ResponseFormat;
+const error_types = require('./error_types');
 module.exports = {
     create(req, res) {
         return proveedor
@@ -9,6 +10,7 @@ module.exports = {
                 nombre: req.body.nombre,
                 email: req.body.email,
                 descripcion: req.body.descripcion,
+                direccion: req.body.direccion,
                 telefono: req.body.telefono,
                 foto: req.body.foto,
             })
@@ -62,7 +64,7 @@ module.exports = {
                 )
             ));
     },
-    destroy(req, res) {
+    destroy(req, res, next) {
         return proveedor
             .findById(req.params.id)
             .then(proveedor => {
@@ -98,5 +100,6 @@ module.exports = {
                         )
                     ));
             });
+
     }
 }

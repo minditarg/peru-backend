@@ -1,9 +1,9 @@
-const users = require('./users');
+const usuarios = require('./usuarios');
 const servicios = require('./servicios');
 const categorias = require('./categorias');
 const proveedores = require('./proveedores');
 module.exports = {
-    users,
+    usuarios,
     servicios,
     categorias,
     proveedores
