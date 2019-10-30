@@ -1,8 +1,9 @@
 const proveedor = require('../db/models').Proveedor;
 const servicios = require('../db/models').Servicio;
+const categorias = require('../db/models').Categoria;
 const db = require('../db/models').db;
 const ResponseFormat = require('../core').ResponseFormat;
-const error_types = require('./error_types');
+const error_types = require('../core/error_types');
 module.exports = {
     create(req, res) {
         return proveedor
@@ -13,6 +14,7 @@ module.exports = {
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
                 foto: req.body.foto,
+                usuarioId:req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
                 proveedor,
@@ -32,7 +34,8 @@ module.exports = {
                 include: [{
                     model: servicios,
                     as: 'servicios'
-                }]
+                },
+                ]
             })
             .then(proveedor => {
                 if (!proveedor) {
@@ -45,7 +48,6 @@ module.exports = {
                         )
                     )
                 }
-
                 return res.status(200).json(
                     ResponseFormat.build(
                         proveedor,

@@ -11,9 +11,9 @@ const bodyParser = require('body-parser');
 const passport = require("passport");
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcrypt');
-//const user_routes         = require('./routes/user');
 const User = require('./db/models').Usuario;
 const customMdw = require('./middleware/custom');
 //end login require
@@ -24,8 +24,9 @@ var cors = require('cors');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser());
 app.use(cors());
+app.use(bodyParser.json());
+app.use(passport.initialize());
 
 require('./routes')(app);
 
@@ -73,10 +74,11 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.JWT_SECRET;
 opts.algorithms = [process.env.JWT_ALGORITHM];
 
+//INICIO autenticacion LOCAL
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
   User.findById(jwt_payload.sub)
     .then(data => {
-      if (data === null) { 
+      if (data === null) {
         return done(null, false);
       }
       else
@@ -84,11 +86,67 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
     })
     .catch(err => done(err, null))
 }));
+//FIN autenticacion LOCAL
+//INICIO autorizacion por facebook
+
+
+
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: process.env.FACEBOOK_APP_CALLBACK,
+  profileFields: ['id', 'displayName', 'photos', 'email']
+}, (accessToken, refreshToken, profile, done) => {
+  User.findOne({
+    where: {
+      providerId: profile.id
+    }
+  })
+    .then(data => {
+      if (data === null) {
+        return done(null, profile,null);
+      }
+      return done(null, profile,null); 
+    })
+    .catch(err => console.log("Hubo un error", err)) // error en DB
+}
+
+));
+
+
+
+
+
+
+// passport.use(new FacebookStrategy({
+//   clientID: process.env.FACEBOOK_APP_ID,
+//   clientSecret: process.env.FACEBOOK_APP_SECRET,
+//   callbackURL: process.env.FACEBOOK_APP_CALLBACK,
+//   profileFields: ['id', 'displayName', 'photos', 'email']
+// },
+// function(accessToken, refreshToken, profile, done) { console.log("entree");
+//   User.findOne({where: { providerId: profile.id }}, function(err, user) {   console.log("ha2aay que crear un nuevo usuarioo");
+//     if(err) throw(err);
+//     if(!err && user!= null) return done(null, user);
+//     console.log("haaay que crear un nuevo usuarioo");
+//     var user = new Usuario({
+//       provider_id: profile.id,
+//       provider: profile.provider,
+//       nombre: profile.displayName,
+//       avatar: profile.photos[0].value
+//     });
+//     user.save(function(err) {
+//       if(err) throw err;
+//       done(null, user);
+//     });
+//   });
+// }
+// ));
+//FIN autorizacion por facebook
 
 //conectamos todos los middleware de terceros
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(passport.initialize());
+
 //app.use('/public', express.static(process.cwd() + '/public'));
 
 

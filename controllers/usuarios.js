@@ -3,17 +3,24 @@ const ResponseFormat = require('../core').ResponseFormat;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const error_types = require('./error_types');
+const error_types = require('../core/error_types');
 
 module.exports = {
 
     register: (req, res, next) => {
-        Usuario.find({where: {email: req.body.email }})
-            .then(data => { //si la consulta se ejecuta
-                if (data) { //si el usuario existe
-                    throw new error_types.InfoError("user already exists");
+        Usuario.find({ where: { email: req.body.email } })
+            .then(usuario => {
+                if (usuario) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "El usuario ya existe",
+                            404,
+                            "error"
+                        )
+                    )
                 }
-                else { //si no existe el usuario se crea/registra
+                else {
                     var hash = bcrypt.hashSync(req.body.password, parseInt(process.env.BCRYPT_ROUNDS));
                     return Usuario
                         .create({
@@ -22,17 +29,34 @@ module.exports = {
                         })
                 }
             })
-            .then(data => { //usuario registrado con exito, pasamos al siguiente manejador
-                res.json({ data: data });
+            .then(usuario => {
+                res.status(201).json(ResponseFormat.build(
+                    usuario,
+                    "Usuario creado correctamente",
+                    201,
+                    "success"
+                ));
             })
-            .catch(err => { //error en registro, lo pasamos al manejador de errores
-                next(err);
+            .catch(err => {
+                ResponseFormat.error(
+                    error.message,
+                    "Ocurrió un error cuando se creaba el Usuario",
+                    500,
+                    "error"
+                )
             })
     },
     login: (req, res, next) => {
         passport.authenticate("local", { session: false }, (error, user) => {
             if (error || !user) {
-                next(new error_types.Error404("username or password not correct."))
+                return res.status(404).json(
+                    ResponseFormat.build(
+                        {},
+                        "El usuario o la contraseña son incorrectos",
+                        404,
+                        "error"
+                    )
+                )
             } else {
                 const payload = {
                     sub: user.id,
@@ -40,91 +64,73 @@ module.exports = {
                     username: user.email
                 };
                 const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                res.json({ data: { token: token } });
+                res.status(201).json(ResponseFormat.build(
+                    token,
+                    "Login correcto",
+                    201,
+                    "success"
+                ));
             }
 
         })(req, res);
-    }
+    },
 
+    loginFacebook: (req, res, next) => {
+        passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
+           console.log(error, user, info);
+        })(req, res, next);
+    },
 
+    loginFacebookCallback: (req, res, next) => {
+        passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
+            if (error || !user) {
+                return res.status(404).json(
+                    ResponseFormat.build(
+                        {},
+                        error.message,
+                        404,
+                        "error"
+                    )
+                )
+            } else {
+                Usuario.findOne({ where: { providerId: user.id } }).then(usuario => {
+                    if (!usuario) {
+                        console.log("El usuario no existe, se creará")
+                        Usuario.create({
+                            providerId: user.id,
+                            provider: user.provider,
+                            nombre: user.displayName,
+                            avatar: user.photos[0].value,
+                            email: user.emails[0].value,
+                        })
+                    }else{
+                        console.log("El usuario ya existe")
+                    }
+                    const payload = {
+                        sub: user.id,
+                        exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                        username: user.email
+                    };
+                    const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+                    res.redirect("exp://10.30.30.125:19000")
 
+                    // res.status(201).json(ResponseFormat.build(
+                    //     token,
+                    //     "Login correcto",
+                    //     201,
+                    //     "success"
+                    // ));
+                })
+                    .catch(err => {
+                        ResponseFormat.error(
+                            error,
+                            "Ocurrió un error cuando se creaba el Usuario",
+                            500,
+                            "error"
+                        )
+                    })
+            }
 
-
-
-
-    // create(req, res) {
-    //     return Usuario
-    //     .create({
-    //         password: req.body.password,
-    //         email: req.body.email
-    //     })
-    //     .then(Usuario => res.status(201).json(ResponseFormat.build(
-    //         Usuario,
-    //         "Usuario creado correctamente",
-    //         201,
-    //         "success"
-    //     )))
-    //     .catch(error => res.status(400).json(ResponseFormat.error(
-    //         error.message,
-    //         "Something went wrong when create Usuarios",
-    //         "error"
-    //     )))
-    // },
-    // list(req, res) {
-    //     return Usuario
-    //     .all()
-    //     .then(Usuarios => res.status(200).json(ResponseFormat.build(
-    //         Usuarios,
-    //         "Usuario Information Reterive successfully",
-    //         200,
-    //         "success"
-    //     )))
-    //     .catch(error => res.status(400).send(ResponseFormat.build(
-    //         error.message,
-    //         "Somthing went wrong when Reterieve Information",
-    //         400,
-    //         "error"
-    //     )));
-    // },
-
-    // update(req, res) {
-    //     return Usuario
-    //     .findById(req.params.UsuarioId)
-    //     .then(usr => {
-    //         if(!usr) {
-    //             return res.status(404).json(
-    //                 ResponseFormat.error(
-    //                     {},
-    //                     "Usuario not found",
-    //                     404,
-    //                     "error"
-    //                 )
-    //             );
-    //         }
-
-    //         return usr
-    //         .update({
-    //             firstName: req.body.firstName || usr.firstName,
-    //             lastName: req.body.lastName || usr.lastName,
-    //             email:  req.body.email || usr.email
-    //         })
-    //         .then(() => res.status(200).json(
-    //             ResponseFormat.build(
-    //                 usr,
-    //                 "Usuario Update successfully",
-    //                 200,
-    //                 "success"
-    //             )
-    //         ))
-    //         .catch((error) => res.status(500).json(
-    //             ResponseFormat.build(
-    //                 {},
-    //                 "someting went wrong when update the Usuario",
-    //                 500,
-    //                 "error"
-    //             )
-    //         ));
-    //     });
-    // }
-
+        })(req, res, next);
+    },
 }

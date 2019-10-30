@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'proveedorId',
       as: 'servicios'
     });
-    Proveedor.belongsTo(models.Usuario);
+    Proveedor.belongsTo(models.Usuario, {foreignKey: 'usuarioId',});
   };
   return Proveedor;
 };

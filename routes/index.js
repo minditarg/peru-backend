@@ -5,6 +5,7 @@ const serviciosController = require('../controllers').servicios
 const categoriasController = require('../controllers').categorias
 const proveedoresController = require('../controllers').proveedores
 const customMdw = require('../middleware/custom');
+const passport = require("passport");
 
 module.exports = (app) => {
   // app.post('/api/users', userController.create);
@@ -32,5 +33,11 @@ module.exports = (app) => {
   app.post('/api/login', usuariosController.login);
   app.post('/api/register', usuariosController.register);
   app.get('/api/protected', customMdw.ensureAuthenticated, proveedoresController.list);
+
+  app.get('/api/auth/facebook', usuariosController.loginFacebook);
+  app.get('/api/auth/facebook/callback',usuariosController.loginFacebookCallback);
+
+
 }
+
 /* GET home page. */

@@ -1,6 +1,6 @@
 'use strict'
 const passport          = require('passport');
-const error_types       = require('../controllers/error_types');
+const error_types       = require('../core/error_types');
 
 let middlewares = {
     
@@ -22,7 +22,7 @@ let middlewares = {
             if (err) { return next(err); }
 
             //si el token está firmado correctamente pero no pertenece a un usuario existente
-            if (!user) { return next(new error_types.Error403("You are not allowed to access.")); }
+            if (!user) { return next(new error_types.Error403("No tienes acceso.")); }
             
             //inyectamos los datos de usuario en la request
             req.user = user;
