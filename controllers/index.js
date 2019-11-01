@@ -1,10 +1,12 @@
-const usuarios = require('./usuarios');
+const login = require('./login');
 const servicios = require('./servicios');
 const categorias = require('./categorias');
 const proveedores = require('./proveedores');
+const usuario = require('./usuario');
 module.exports = {
-    usuarios,
+    login,
     servicios,
     categorias,
-    proveedores
+    proveedores,
+    usuario
 }

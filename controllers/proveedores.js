@@ -68,7 +68,7 @@ module.exports = {
     },
     destroy(req, res, next) {
         return proveedor
-            .findById(req.params.id)
+            .findByPk(req.params.id)
             .then(proveedor => {
                 if (!proveedor) {
                     return res.status(404).json(
