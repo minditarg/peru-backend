@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Usuario.associate = function(models) {
     // associations can be defined here
+    Usuario.hasOne(models.Proveedor, {foreignKey: 'usuarioId'});
+    Usuario.hasOne(models.Cliente, {foreignKey: 'usuarioId'});
   };
   return Usuario;
 };

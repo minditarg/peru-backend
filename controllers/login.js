@@ -1,4 +1,6 @@
 const Usuario = require('../db/models').Usuario;
+const Proveedor = require('../db/models').Proveedor;
+const Cliente = require('../db/models').Cliente;
 const ResponseFormat = require('../core').ResponseFormat;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -8,7 +10,7 @@ const error_types = require('../core/error_types');
 module.exports = {
 
     register: (req, res, next) => {
-        Usuario.find({ where: { email: req.body.email } })
+        Usuario.findOne({ where: { email: req.body.email } })
             .then(usuario => {
                 if (usuario) {
                     return res.status(404).json(
@@ -37,7 +39,7 @@ module.exports = {
                     "success"
                 ));
             })
-            .catch(err => {
+            .catch(error => {
                 ResponseFormat.error(
                     error.message,
                     "Ocurrió un error cuando se creaba el Usuario",
@@ -51,7 +53,7 @@ module.exports = {
             if (error || !user) {
                 return res.status(404).json(
                     ResponseFormat.build(
-                        {},
+                        error.message ,
                         "El usuario o la contraseña son incorrectos",
                         404,
                         "error"
@@ -63,13 +65,29 @@ module.exports = {
                     exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
                     username: user.email
                 };
-                const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                res.status(201).json(ResponseFormat.build(
-                    token,
-                    "Login correcto",
-                    201,
-                    "success"
-                ));
+                Usuario.findOne({
+                    where: { id: user.id },
+                    include: [
+                        {
+                            model: Proveedor
+                          
+                        },
+                        {
+                            model: Cliente
+                        }
+                    ]
+                }).then(usuario => {
+
+                    const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+                    var resp = ResponseFormat.build(
+                        { tokens: token, user: usuario },
+                        "Login correcto",
+                        201,
+                        "success"
+                    );
+                    res.status(201).json(resp);
+                });
+
             }
 
         })(req, res);
@@ -77,7 +95,7 @@ module.exports = {
 
     loginFacebook: (req, res, next) => {
         passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
-           console.log(error, user, info);
+            console.log(error, user, info);
         })(req, res, next);
     },
 
@@ -94,11 +112,11 @@ module.exports = {
                 //     )
                 // )
             } else {
-                var nuevo=false;
+                var nuevo = false;
                 Usuario.findOne({ where: { providerId: user.id } }).then(usuario => {
                     if (!usuario) {
                         console.log("El usuario no existe, se creará");
-                        nuevo=true;
+                        nuevo = true;
                         Usuario.create({
                             providerId: user.id,
                             provider: user.provider,
@@ -106,7 +124,7 @@ module.exports = {
                             avatar: user.photos[0].value,
                             email: user.emails[0].value,
                         })
-                    }else{
+                    } else {
                         console.log("El usuario ya existe")
                     }
                     const payload = {
@@ -115,7 +133,7 @@ module.exports = {
                         username: user.email
                     };
                     const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                   res.redirect("exp://127.0.0.1:19000?token="+ token + "&nuevo=" +nuevo);
+                    res.redirect("exp://127.0.0.1:19000?token=" + token + "&nuevo=" + nuevo);
 
                     // res.status(201).json(ResponseFormat.build(
                     //     token,

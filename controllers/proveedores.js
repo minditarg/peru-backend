@@ -6,27 +6,30 @@ const ResponseFormat = require('../core').ResponseFormat;
 const error_types = require('../core/error_types');
 module.exports = {
     create(req, res) {
-        return proveedor
-            .create({
-                nombre: req.body.nombre,
-                email: req.body.email,
-                descripcion: req.body.descripcion,
-                direccion: req.body.direccion,
-                telefono: req.body.telefono,
-                foto: req.body.foto,
-                usuarioId:req.body.usuarioId
-            })
-            .then(proveedor => res.status(201).json(ResponseFormat.build(
-                proveedor,
-                "Proveedor creado correctamente",
-                201,
-                "success"
-            )))
-            .catch(error => res.status(400).json(ResponseFormat.error(
-                error.message,
-                "Ocurrió un error cuando se creaba el Proveedor",
-                "error"
-            )))
+      
+            console.log("nombre", req.body.nombre, "email ", req.body.email);
+            return proveedor
+                .create({
+                    nombre: req.body.nombre,
+                    email: req.body.email,
+                    descripcion: req.body.descripcion,
+                    direccion: req.body.direccion,
+                    telefono: req.body.telefono,
+                    foto: req.body.foto,
+                    usuarioId: req.body.usuarioId
+                })
+                .then(proveedor => res.status(201).json(ResponseFormat.build(
+                    proveedor,
+                    "Proveedor creado correctamente",
+                    201,
+                    "success"
+                )))
+                .catch(error => res.status(400).json(ResponseFormat.error(
+                    error.message,
+                    "Ocurrió un error cuando se creaba el Proveedor: " + error.message,
+                    "error"
+                )))
+       
     },
     list(req, res) {
         return proveedor

@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use('/uploads', express.static('uploads'));
 
 require('./routes')(app);
 
@@ -52,13 +53,13 @@ passport.use(new LocalStrategy({
   usernameField: "email",
   passwordField: "password",
   session: false
-}, (username, password, done) => {
+}, (username, password, done) => { 
   User.findOne({
     where: {
       email: username
     }
   })
-    .then(data => {
+    .then(data => { 
       if (data === null) {
         return done(null, false);
       }//el usuario no existe
