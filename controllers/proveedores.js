@@ -4,32 +4,41 @@ const categorias = require('../db/models').Categoria;
 const db = require('../db/models').db;
 const ResponseFormat = require('../core').ResponseFormat;
 const error_types = require('../core/error_types');
+const fs = require('fs');
 module.exports = {
     create(req, res) {
-      
-            console.log("nombre", req.body.nombre, "email ", req.body.email);
-            return proveedor
-                .create({
-                    nombre: req.body.nombre,
-                    email: req.body.email,
-                    descripcion: req.body.descripcion,
-                    direccion: req.body.direccion,
-                    telefono: req.body.telefono,
-                    foto: req.body.foto,
-                    usuarioId: req.body.usuarioId
-                })
-                .then(proveedor => res.status(201).json(ResponseFormat.build(
-                    proveedor,
-                    "Proveedor creado correctamente",
-                    201,
-                    "success"
-                )))
-                .catch(error => res.status(400).json(ResponseFormat.error(
+        console.log('reqqq', req.file);
+        return proveedor
+            .create({
+                nombre: req.body.nombre,
+                email: req.body.email,
+                descripcion: req.body.descripcion,
+                direccion: req.body.direccion,
+                telefono: req.body.telefono,
+                //foto: req.file.filename,
+                usuarioId: req.body.usuarioId
+            })
+            .then(proveedor => res.status(201).json(ResponseFormat.build(
+                proveedor,
+                "Proveedor creado correctamente",
+                201,
+                "success"
+            )))
+            .catch(error => {
+                //eliminar foto adjuntada
+                try {
+                    fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                    //file removed
+                  } catch(err) {
+                    console.error(err)
+                  }
+                return res.status(400).json(ResponseFormat.error(
                     error.message,
                     "Ocurrió un error cuando se creaba el Proveedor: " + error.message,
                     "error"
-                )))
-       
+                ));
+            })
+
     },
     list(req, res) {
         return proveedor

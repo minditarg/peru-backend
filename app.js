@@ -16,6 +16,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcrypt');
 const User = require('./db/models').Usuario;
 const customMdw = require('./middleware/custom');
+
 //end login require
 
 var app = express();
@@ -23,12 +24,12 @@ var cors = require('cors');
 // view engine setup
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(passport.initialize());
-app.use('/uploads', express.static('uploads'));
 
+
+app.use('/uploads', express.static('uploads'));
 require('./routes')(app);
 
 // catch 404 and forward to error handler
