@@ -7,7 +7,6 @@ const error_types = require('../core/error_types');
 const fs = require('fs');
 module.exports = {
     create(req, res) {
-        console.log('reqqq', req.file);
         return proveedor
             .create({
                 nombre: req.body.nombre,
@@ -15,7 +14,8 @@ module.exports = {
                 descripcion: req.body.descripcion,
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
-                //foto: req.file.filename,
+                // foto: req.file.filename,
+                foto: req.body.foto,
                 usuarioId: req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -26,12 +26,13 @@ module.exports = {
             )))
             .catch(error => {
                 //eliminar foto adjuntada
-                try {
-                    fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
-                    //file removed
-                  } catch(err) {
-                    console.error(err)
-                  }
+                // try {
+                //     //fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                //     //file removed
+                //   } catch(err) {
+                //     console.error(err)
+                //   }
+                
                 return res.status(400).json(ResponseFormat.error(
                     error.message,
                     "Ocurrió un error cuando se creaba el Proveedor: " + error.message,

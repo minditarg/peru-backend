@@ -23,11 +23,14 @@ var app = express();
 var cors = require('cors');
 // view engine setup
 app.use(logger('dev'));
-app.use(express.json());
+//app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(passport.initialize());
-
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use('/uploads', express.static('uploads'));
 require('./routes')(app);
@@ -54,7 +57,7 @@ passport.use(new LocalStrategy({
   usernameField: "email",
   passwordField: "password",
   session: false
-}, (username, password, done) => { 
+}, (username, password, done) => {
   User.findOne({
     where: {
       email: username
@@ -64,10 +67,10 @@ passport.use(new LocalStrategy({
       if (data === null) {
         return done(null, false);
       }//el usuario no existe
-      else if (!bcrypt.compareSync(password, data.password)) { return done(null, false); } //no coincide la password
+      else if (!bcrypt.compareSync(password, data.password)) {  return done(null, false); } //no coincide la password
       return done(null, data); //login ok
     })
-    .catch(err => done(err, null)) // error en DB
+    .catch(err =>  done(err, null)) // error en DB
 }));
 
 /** config de estrategia jwt de passport ******/
@@ -115,7 +118,6 @@ passport.use(new FacebookStrategy({
 }
 
 ));
-
 
 
 

@@ -32,28 +32,30 @@ module.exports = {
                 }
             })
             .then(usuario => {
-                res.status(201).json(ResponseFormat.build(
+                return res.status(201).json(ResponseFormat.build(
                     usuario,
                     "Usuario creado correctamente",
                     201,
                     "success"
                 ));
             })
-            .catch(error => {
-                ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se creaba el Usuario",
-                    500,
-                    "error"
+            .catch(error => { 
+                return res.status(404).json(
+                    ResponseFormat.build(
+                        error.message,
+                        "Ocurrió un error cuando se creaba el Usuario",
+                        404,
+                        "error"
+                    )
                 )
             })
     },
-    login: (req, res, next) => {
+    login: (req, res, next) => {  
         passport.authenticate("local", { session: false }, (error, user) => {
             if (error || !user) {
                 return res.status(404).json(
                     ResponseFormat.build(
-                        error.message ,
+                        error ,
                         "El usuario o la contraseña son incorrectos",
                         404,
                         "error"
