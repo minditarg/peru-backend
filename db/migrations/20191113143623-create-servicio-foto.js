@@ -1,29 +1,24 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Servicios', {
+    return queryInterface.createTable('servicioFotos', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nombre: {
-        type: Sequelize.STRING
+      foto: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
-      descripcion: {
-        type: Sequelize.TEXT
-      },
-      foto:{
-        type: Sequelize.TEXT
-      },
-      subcategoriaId: {
+      servicioId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Subcategoria',
+          model: 'Servicios',
           Key: 'id',
-          as: 'subcategoriaId'
+          as: 'servicioId'
         }
       }, 
       createdAt: {
@@ -33,13 +28,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      deletedAt: {
-        type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Servicios');
+    return queryInterface.dropTable('servicioFotos');
   }
 };

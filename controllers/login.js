@@ -1,6 +1,7 @@
 const Usuario = require('../db/models').Usuario;
 const Proveedor = require('../db/models').Proveedor;
 const Cliente = require('../db/models').Cliente;
+const Servicio = require('../db/models').Servicio;
 const ResponseFormat = require('../core').ResponseFormat;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -71,7 +72,8 @@ module.exports = {
                     where: { id: user.id },
                     include: [
                         {
-                            model: Proveedor
+                            model: Proveedor,
+                            include:[{model: Servicio, as: "servicios" }]
                           
                         },
                         {

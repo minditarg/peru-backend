@@ -1,4 +1,5 @@
 const categoria = require('../db/models').Categoria;
+const subcategoria = require('../db/models').Subcategoria;
 const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
     create(req, res) { 
@@ -21,6 +22,10 @@ module.exports = {
     list (req, res) {
         return categoria
         .findAll({
+            include: [
+                {
+                    model: subcategoria, as : "subcategorias"
+                }]
         })
         .then(categoria => {
             if(!categoria) {
@@ -33,7 +38,7 @@ module.exports = {
                     )
                 )
             }
-
+            console.log(categoria);
             return res.status(200).json(
                 ResponseFormat.build(
                     categoria,

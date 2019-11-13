@@ -7,7 +7,8 @@ module.exports = {
         .create({
             nombre: req.body.nombre,
             descripcion: req.body.descripcion,
-            categoriaId: req.body.categoriaId,
+            foto: req.body.foto,
+            subcategoriaId: req.body.subcategoriaId,
             proveedorId: req.body.proveedorId
         })
         .then(servicio => res.status(201).json(ResponseFormat.build(

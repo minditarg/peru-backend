@@ -10,13 +10,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    foto: DataTypes.TEXT,
     descripcion: DataTypes.TEXT,
-    categoriaId: {
+    subcategoriaId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'La Categoría es requerida.'
+          msg: 'La Subcategoría es requerida.'
         }
       }
     },
@@ -31,8 +32,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   Servicio.associate = function (models) {
-    Servicio.belongsTo(models.Categoria, { as: 'categoria', constraints: false });
+    Servicio.belongsTo(models.Subcategoria, { as: 'subcategoria', constraints: false });
     Servicio.belongsTo(models.Proveedor);
+    Servicio.hasMany(models.ServicioFoto, {
+      onDelete: 'CASCADE',
+      hooks: true, 
+      foreignKey: 'servicioId',
+      as: 'galeria'
+    });
   };
   return Servicio;
 };

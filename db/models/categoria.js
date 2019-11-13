@@ -22,7 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {paranoid: true});
   Categoria.associate = function(models) {
-    // associations can be defined here
+    Categoria.hasMany(models.Subcategoria, {
+      onDelete: 'CASCADE',
+      hooks: true, 
+      foreignKey: 'categoriaId',
+      as: 'subcategorias'
+    });
   };
   return Categoria;
 };
