@@ -1,10 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const servicioFoto = sequelize.define('ServicioFoto', {
+  const ServicioFoto = sequelize.define('ServicioFoto', {
     foto: DataTypes.TEXT
   }, {});
-  servicioFoto.associate = function(models) {
+  ServicioFoto.associate = function(models) {
     // associations can be defined here
   };
-  return servicioFoto;
+  return ServicioFoto;
 };
