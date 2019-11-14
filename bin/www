@@ -20,7 +20,7 @@ const options = {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
 
 /**
@@ -42,7 +42,7 @@ server.on('listening', onListening);
 ///http
 var server2 = http.createServer(options, app);
 
-server2.listen(3001);
+server2.listen(5001);
 server2.on('error', onError);
 server2.on('listening', onListening);
 
