@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Subcategoria',
+          model: 'subcategoria',
           Key: 'id',
           as: 'subcategoriaId'
         }

@@ -1,5 +1,5 @@
 {
-  "development": {
+  "test": {
     "username": "root",
     "password": null,
     "operatorsAliases": false,
@@ -11,7 +11,7 @@
       "paranoid": true
     }
   },
-  "test": {
+  "development": {
     "username": "peru",
     "password": "Peru2019",
     "operatorsAliases": false,
