@@ -28,6 +28,7 @@ module.exports = (app) => {
 
     app.get('/api/proveedor/listado', customMdw.ensureAuthenticated, proveedoresController.list);
     app.post('/api/proveedor', proveedoresController.create);
+    app.put('/api/proveedor/:id', proveedoresController.update);
     app.delete('/api/proveedor/:id', customMdw.ensureAuthenticated, proveedoresController.destroy);
 
     // app.post('/api/proveedor', uploadImage.single('foto'), proveedoresController.create);

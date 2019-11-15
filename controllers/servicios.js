@@ -5,9 +5,22 @@ const ServicioFoto = require('../db/models').ServicioFoto;
 const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
     create(req, res) {
-        let fotoDestacada = req.body.foto != null ? req.body.foto[0] : null;
-        if (req.body.foto != null) req.body.foto.shift();
-        console.log(req.body.foto.length);
+        let galeria = Array();
+        if (req.body.foto != null) {
+            req.body.foto.forEach(element => {
+                console.log(element);
+                var base64Data = element.foto.replace('/^data:image\/png;base64,/', "");
+                nombreFoto = Date.now() + ".png";
+                galeria.push( { foto :  nombreFoto } );
+                require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
+                    console.log(err);
+                });
+            });
+        }
+
+        let fotoDestacada = req.body.foto != null ? galeria[0] : null;
+        if (req.body.foto != null) galeria.shift();
+
         return servicio
             .create({
                 nombre: req.body.nombre,
@@ -18,7 +31,7 @@ module.exports = {
                 galeria: req.body.foto
             }, {
                 include: [{
-                   
+
                     association: "galeria",
                     as: 'galeria'
                 }]

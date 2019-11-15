@@ -7,6 +7,14 @@ const error_types = require('../core/error_types');
 const fs = require('fs');
 module.exports = {
     create(req, res) {
+        let nombreFoto=null;
+        if (req.body.foto!= null) {
+            var base64Data = req.body.foto.replace('/^data:image\/png;base64,/', "");
+            nombreFoto = Date.now() + ".png";
+            require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
+                console.log(err);
+            });
+        }
         return proveedor
             .create({
                 nombre: req.body.nombre,
@@ -15,7 +23,7 @@ module.exports = {
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
                 // foto: req.file.filename,
-                foto: req.body.foto,
+                foto: req.body.foto ? nombreFoto : null,
                 usuarioId: req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -32,14 +40,74 @@ module.exports = {
                 //   } catch(err) {
                 //     console.error(err)
                 //   }
-                
+
                 return res.status(400).json(ResponseFormat.error(
                     error.message,
                     "Ocurrió un error cuando se creaba el Proveedor: " + error.message,
                     "error"
                 ));
             })
+    },
+    update(req, res) {
 
+
+        return proveedor
+            .findByPk(req.params.id)
+            .then(prov => {
+                if (!prov) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el proveedor",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                let nombreFoto=null;
+                if (req.body.foto!= null) {
+                    try {
+                        fs.unlinkSync(process.env.PATH_FILES_UPLOAD + prov.foto);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                    var base64Data = req.body.foto.replace('/^data:image\/png;base64,/', "");
+                    nombreFoto = prov.id + Date.now() + ".png";
+                    require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
+                        console.log(err);
+                    });
+                }
+                return prov
+                    .update({
+                        nombre: req.body.nombre,
+                        email: req.body.email,
+                        descripcion: req.body.descripcion,
+                        direccion: req.body.direccion,
+                        telefono: req.body.telefono,
+                        foto: nombreFoto != null ? nombreFoto : prov.foto,
+                        usuarioId: req.body.usuarioId
+                    })
+                    .then(proveedor => res.status(201).json(ResponseFormat.build(
+                        proveedor,
+                        "Proveedor actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
+                        return res.status(400).json(ResponseFormat.error(
+                            error.message,
+                            "Ocurrió un error cuando se actualizaba el Proveedor: " + error.message,
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.message,
+                    "Ocurrió un error cuando se actualizaba el Proveedor: " + error.message,
+                    "error"
+                ));
+            })
     },
     list(req, res) {
         return proveedor
