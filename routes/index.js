@@ -20,7 +20,7 @@ module.exports = (app) => {
 
     app.get('/api/servicios', customMdw.ensureAuthenticated, serviciosController.list);
     app.post('/api/servicio', customMdw.ensureAuthenticated, serviciosController.create);
-    app.delete('/api/servicios/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
+    app.delete('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
 
     app.get('/api/categorias', customMdw.ensureAuthenticated, categoriasController.list);
     app.post('/api/categorias', customMdw.ensureAuthenticated, categoriasController.create);
@@ -28,6 +28,7 @@ module.exports = (app) => {
 
     app.get('/api/proveedor/listado', customMdw.ensureAuthenticated, proveedoresController.list);
     app.post('/api/proveedor', proveedoresController.create);
+    app.put('/api/proveedor/:id', proveedoresController.update);
     app.delete('/api/proveedor/:id', customMdw.ensureAuthenticated, proveedoresController.destroy);
 
     // app.post('/api/proveedor', uploadImage.single('foto'), proveedoresController.create);
@@ -45,7 +46,7 @@ module.exports = (app) => {
     app.get('/api/auth/facebook/callback', loginController.loginFacebookCallback);
 
 
-    app.get('/api/usuario/perfil', customMdw.ensureAuthenticated, usuarioController.get);
+    app.get('/api/usuario/perfil/:id', customMdw.ensureAuthenticated, usuarioController.get);
 
 
 
