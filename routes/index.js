@@ -19,7 +19,7 @@ module.exports = (app) => {
     // app.delete('/api/users/:userId', userController.destroy);
 
     app.get('/api/servicios', customMdw.ensureAuthenticated, serviciosController.list);
-    app.post('/api/servicio', customMdw.ensureAuthenticated, serviciosController.create);
+    app.post('/api/servicio', [customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.create);
     app.delete('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
 
     app.get('/api/categorias', customMdw.ensureAuthenticated, categoriasController.list);
@@ -27,18 +27,11 @@ module.exports = (app) => {
     app.delete('/api/categorias/:id', customMdw.ensureAuthenticated, categoriasController.destroy);
 
     app.get('/api/proveedor/listado', customMdw.ensureAuthenticated, proveedoresController.list);
-    app.post('/api/proveedor', proveedoresController.create);
-    app.put('/api/proveedor/:id', proveedoresController.update);
+    app.post('/api/proveedor', [customMdw.ensureAuthenticated, uploadImage.single('foto')], proveedoresController.create);
+    app.put('/api/proveedor/:id',[customMdw.ensureAuthenticated, uploadImage.single('foto')], proveedoresController.update);
     app.delete('/api/proveedor/:id', customMdw.ensureAuthenticated, proveedoresController.destroy);
 
-    // app.post('/api/proveedor', uploadImage.single('foto'), proveedoresController.create);
-    // app.post('/api/proveedore', uploadImage.single('foto'), (req, res, next) => {
-    //     res.json(req.file);
-    //     console.log(req.file);
-    //     console.log(res);
-    //   })
-      
-  
+    
 
     app.post('/api/login', loginController.login);
     app.post('/api/registrar', loginController.register);

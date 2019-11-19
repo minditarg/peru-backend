@@ -7,14 +7,6 @@ const error_types = require('../core/error_types');
 const fs = require('fs');
 module.exports = {
     create(req, res) {
-        let nombreFoto=null;
-        if (req.body.foto!= null) {
-            var base64Data = req.body.foto.replace('/^data:image\/png;base64,/', "");
-            nombreFoto = Date.now() + ".png";
-            require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
-                console.log(err);
-            });
-        }
         return proveedor
             .create({
                 nombre: req.body.nombre,
@@ -22,8 +14,7 @@ module.exports = {
                 descripcion: req.body.descripcion,
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
-                // foto: req.file.filename,
-                foto: req.body.foto ? nombreFoto : null,
+                foto: req.file.filename,
                 usuarioId: req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -33,14 +24,12 @@ module.exports = {
                 "success"
             )))
             .catch(error => {
-                //eliminar foto adjuntada
-                // try {
-                //     //fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
-                //     //file removed
-                //   } catch(err) {
-                //     console.error(err)
-                //   }
-
+                //eliminar foto adjuntada si hubo errores de alta
+                try {
+                    fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                } catch (err) {
+                    console.error(err)
+                }
                 return res.status(400).json(ResponseFormat.error(
                     error.message,
                     "Ocurrió un error cuando se creaba el Proveedor: " + error.message,
@@ -48,9 +37,8 @@ module.exports = {
                 ));
             })
     },
+
     update(req, res) {
-
-
         return proveedor
             .findByPk(req.params.id)
             .then(prov => {
@@ -64,18 +52,14 @@ module.exports = {
                         )
                     );
                 }
-                let nombreFoto=null;
-                if (req.body.foto!= null) {
+                let foto = prov.foto;
+                if (req.file != null) {
                     try {
                         fs.unlinkSync(process.env.PATH_FILES_UPLOAD + prov.foto);
                     } catch (err) {
                         console.error(err)
                     }
-                    var base64Data = req.body.foto.replace('/^data:image\/png;base64,/', "");
-                    nombreFoto = prov.id + Date.now() + ".png";
-                    require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
-                        console.log(err);
-                    });
+                    foto = req.file.filename
                 }
                 return prov
                     .update({
@@ -84,7 +68,7 @@ module.exports = {
                         descripcion: req.body.descripcion,
                         direccion: req.body.direccion,
                         telefono: req.body.telefono,
-                        foto: nombreFoto != null ? nombreFoto : prov.foto,
+                        foto: foto,
                         usuarioId: req.body.usuarioId
                     })
                     .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -94,6 +78,11 @@ module.exports = {
                         "success"
                     )))
                     .catch(error => {
+                        try {
+                            fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                        } catch (err) {
+                            console.error(err)
+                        }
                         return res.status(400).json(ResponseFormat.error(
                             error.message,
                             "Ocurrió un error cuando se actualizaba el Proveedor: " + error.message,
@@ -183,6 +172,5 @@ module.exports = {
                         )
                     ));
             });
-
     }
 }

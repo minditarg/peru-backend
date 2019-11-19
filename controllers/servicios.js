@@ -6,32 +6,24 @@ const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
     create(req, res) {
         let galeria = Array();
-        if (req.body.foto != null) {
-            req.body.foto.forEach(element => {
-                console.log(element);
-                var base64Data = element.foto.replace('/^data:image\/png;base64,/', "");
-                nombreFoto = Date.now() + ".png";
-                galeria.push( { foto :  nombreFoto } );
-                require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
-                    console.log(err);
-                });
+        let fotoPrincipal = null;
+        let filesBack= req.files;
+        if (req.files != null) {
+            fotoPrincipal =filesBack.shift();
+            filesBack.forEach(element => {
+                galeria.push({ foto: element.filename });
             });
         }
-
-        let fotoDestacada = req.body.foto != null ? galeria[0] : null;
-        if (req.body.foto != null) galeria.shift();
-
         return servicio
             .create({
                 nombre: req.body.nombre,
                 descripcion: req.body.descripcion,
-                foto: fotoDestacada.foto,
+                foto: fotoPrincipal != null ? fotoPrincipal.filename : null,
                 subcategoriaId: req.body.subcategoriaId,
                 proveedorId: req.body.proveedorId,
-                galeria: req.body.foto
+                galeria: galeria
             }, {
                 include: [{
-
                     association: "galeria",
                     as: 'galeria'
                 }]
@@ -42,11 +34,20 @@ module.exports = {
                 201,
                 "success"
             )))
-            .catch(error => res.status(400).json(ResponseFormat.error(
-                error.message,
-                "Ocurrió un error cuando se creaba el Servicio",
-                "error"
-            )))
+            .catch(error => {
+                try {
+                    req.file.forEach(foto => {
+                        fs.unlinkSync(process.env.PATH_FILES_UPLOAD + foto.filename);
+                    });
+                } catch (err) {
+                    console.error(err)
+                }
+                return res.status(400).json(ResponseFormat.error(
+                    error.message,
+                    "Ocurrió un error cuando se creaba el Servicio " + error.message,
+                    "error"
+                ));
+            })
     },
     list(req, res) {
         return servicio
@@ -121,4 +122,48 @@ module.exports = {
                     ));
             });
     }
+    // create(req, res) {
+    //     let galeria = Array();
+    //     if (req.body.foto != null) {
+    //         req.body.foto.forEach(element => {
+    //             console.log(element);
+    //             var base64Data = element.foto.replace('/^data:image\/png;base64,/', "");
+    //             nombreFoto = Date.now() + ".png";
+    //             galeria.push( { foto :  nombreFoto } );
+    //             require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
+    //                 console.log(err);
+    //             });
+    //         });
+    //     }
+
+    //     let fotoDestacada = req.body.foto != null ? galeria[0] : null;
+    //     if (req.body.foto != null) galeria.shift();
+
+    //     return servicio
+    //         .create({
+    //             nombre: req.body.nombre,
+    //             descripcion: req.body.descripcion,
+    //             foto: fotoDestacada.foto,
+    //             subcategoriaId: req.body.subcategoriaId,
+    //             proveedorId: req.body.proveedorId,
+    //             galeria: req.body.foto
+    //         }, {
+    //             include: [{
+
+    //                 association: "galeria",
+    //                 as: 'galeria'
+    //             }]
+    //         })
+    //         .then(servicio => res.status(201).json(ResponseFormat.build(
+    //             servicio,
+    //             "Servicio creado correctamente",
+    //             201,
+    //             "success"
+    //         )))
+    //         .catch(error => res.status(400).json(ResponseFormat.error(
+    //             error.message,
+    //             "Ocurrió un error cuando se creaba el Servicio",
+    //             "error"
+    //         )))
+    // },
 }
