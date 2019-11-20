@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   subcategoria.associate = function(models) {
-    // associations can be defined here
+    subcategoria.belongsTo(models.Categoria, { as: 'categoria', constraints: false });
   };
   return subcategoria;
 };

@@ -18,8 +18,12 @@ module.exports = (app) => {
     // app.put('/api/users/:userId', userController.update);
     // app.delete('/api/users/:userId', userController.destroy);
 
+    
+    app.get('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.get);
     app.get('/api/servicios', customMdw.ensureAuthenticated, serviciosController.list);
     app.post('/api/servicio', [customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.create);
+    app.post('/api/servicio/:id',[customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.update);
+    
     app.delete('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
 
     app.get('/api/categorias', customMdw.ensureAuthenticated, categoriasController.list);
