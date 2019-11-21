@@ -244,7 +244,7 @@ module.exports = {
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
                             error.message,
-                            "Ocurrió un error cuando se eliminaba el Servicio",
+                            "Ocurrió un error cuando se eliminaba el Servicio: " + error.message,
                             500,
                             "error"
                         )

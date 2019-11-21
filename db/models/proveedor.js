@@ -8,16 +8,16 @@ module.exports = (sequelize, DataTypes) => {
         notNull: {
           msg: 'El nombre es requerido.'
         },
-        isUnique(value, next) {
-          Proveedor.findOne({
-            where: { nombre: value },
-            attributes: ['id']
-          }).done((proveedor) => {
-            if (proveedor)
-              return next('Ya existe un Proveedor con el mismo nombre');
-            next();
-          });
-        }
+        // isUnique(value, next) {
+        //   Proveedor.findOne({
+        //     where: { nombre: value },
+        //     attributes: ['id']
+        //   }).done((proveedor) => {
+        //     if (proveedor)
+        //       return next('Ya existe un Proveedor con el mismo nombre');
+        //     next();
+        //   });
+        // }
       },
     },
     descripcion: DataTypes.TEXT,

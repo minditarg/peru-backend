@@ -32,6 +32,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('servicioFotos');
+    return queryInterface.dropTable('ServicioFotos');
   }
 };

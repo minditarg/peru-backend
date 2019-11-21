@@ -14,7 +14,7 @@ module.exports = {
                 descripcion: req.body.descripcion,
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
-                foto: req.file.filename,
+                foto: req.file != null ? req.file.filename : null,
                 usuarioId: req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -40,7 +40,13 @@ module.exports = {
 
     update(req, res) {
         return proveedor
-            .findByPk(req.params.id)
+            .findByPk(req.params.id,{
+                include: [{
+                    model: servicios,
+                    as: 'servicios'
+                },
+                ]
+            })
             .then(prov => {
                 if (!prov) {
                     return res.status(404).json(
