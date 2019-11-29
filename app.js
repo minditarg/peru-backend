@@ -81,7 +81,8 @@ opts.algorithms = [process.env.JWT_ALGORITHM];
 
 //INICIO autenticacion LOCAL
 passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
-  User.findById(jwt_payload.sub)
+  console.log("jwt_payload.sub", jwt_payload.sub);
+  User.findByPk(jwt_payload.sub)
     .then(data => {
       if (data === null) {
         return done(null, false);

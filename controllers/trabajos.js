@@ -218,26 +218,26 @@ module.exports = {
             ));
     },
     destroy(req, res) {
-        return servicio
+        return Servicio
             .findById(req.params.id)
-            .then(servicio => {
-                if (!servicio) {
+            .then(Servicio => {
+                if (!Servicio) {
                     return res.status(404).json(
                         ResponseFormat.error(
-                            "No se encuentra el Servicio",
-                            "Ocurrió un error cuando se eliminaba el Servicio",
+                            "No se encuentra el Trabajo",
+                            "Ocurrió un error cuando se eliminaba el Trabajo",
                             404,
                             "error"
                         )
                     );
                 }
 
-                return servicio
+                return Servicio
                     .destroy()
                     .then(() => res.status(200).json(
                         ResponseFormat.build(
                             {},
-                            "Servicio eliminado correctamente",
+                            "Trabajo eliminado correctamente",
                             200,
                             "success"
                         )
@@ -245,55 +245,12 @@ module.exports = {
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
                             error.message,
-                            "Ocurrió un error cuando se eliminaba el Servicio: " + error.message,
+                            "Ocurrió un error cuando se eliminaba el Trabajo: " + error.message,
                             500,
                             "error"
                         )
                     ));
             });
     }
-    // create(req, res) {
-    //     let galeria = Array();
-    //     if (req.body.foto != null) {
-    //         req.body.foto.forEach(element => {
-    //             console.log(element);
-    //             var base64Data = element.foto.replace('/^data:image\/png;base64,/', "");
-    //             nombreFoto = Date.now() + ".png";
-    //             galeria.push( { foto :  nombreFoto } );
-    //             require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
-    //                 console.log(err);
-    //             });
-    //         });
-    //     }
-
-    //     let fotoDestacada = req.body.foto != null ? galeria[0] : null;
-    //     if (req.body.foto != null) galeria.shift();
-
-    //     return servicio
-    //         .create({
-    //             nombre: req.body.nombre,
-    //             descripcion: req.body.descripcion,
-    //             foto: fotoDestacada.foto,
-    //             subcategoriaId: req.body.subcategoriaId,
-    //             proveedorId: req.body.proveedorId,
-    //             galeria: req.body.foto
-    //         }, {
-    //             include: [{
-
-    //                 association: "galeria",
-    //                 as: 'galeria'
-    //             }]
-    //         })
-    //         .then(servicio => res.status(201).json(ResponseFormat.build(
-    //             servicio,
-    //             "Servicio creado correctamente",
-    //             201,
-    //             "success"
-    //         )))
-    //         .catch(error => res.status(400).json(ResponseFormat.error(
-    //             error.message,
-    //             "Ocurrió un error cuando se creaba el Servicio",
-    //             "error"
-    //         )))
-    // },
+    
 }
