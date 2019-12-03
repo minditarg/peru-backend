@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       foto: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       servicioId: {

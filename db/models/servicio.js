@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    foto: DataTypes.TEXT,
+    foto: DataTypes.STRING,
     descripcion: DataTypes.TEXT,
     subcategoriaId: {
       type: DataTypes.INTEGER,

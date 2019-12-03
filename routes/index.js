@@ -4,7 +4,8 @@ const loginController = require('../controllers').login
 const serviciosController = require('../controllers').servicios
 const categoriasController = require('../controllers').categorias
 const proveedoresController = require('../controllers').proveedores
-const trabajosController = require('../controllers').proveedores
+const trabajosController = require('../controllers').trabajos
+const clientesController = require('../controllers').clientes
 const customMdw = require('../middleware/custom');
 const uploadImage = require('../middleware/uploadImage');
 const passport = require("passport");
@@ -48,6 +49,17 @@ module.exports = (app) => {
 
 
     app.post('/api/trabajo', customMdw.ensureAuthenticated, trabajosController.create);
+    app.get('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.get);
+    app.get('/api/trabajo/listadoPorProveedor/:id', customMdw.ensureAuthenticated, trabajosController.list);
+    app.delete('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.destroy);
+
+
+
+     app.post('/api/cliente', customMdw.ensureAuthenticated, clientesController.create);
+    // app.get('/api/cliente/:id', customMdw.ensureAuthenticated, clientesController.get);
+    app.get('/api/cliente/listado', customMdw.ensureAuthenticated, clientesController.list);
+    app.delete('/api/cliente/:id', customMdw.ensureAuthenticated, clientesController.destroy);
+
 }
 
 /* GET home page. */

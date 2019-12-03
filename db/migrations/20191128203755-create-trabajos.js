@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Trabajo', {
+    return queryInterface.createTable('Trabajos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Cliente',
+          model: 'Clientes',
           Key: 'id',
           as: 'clienteId'
         }
@@ -21,21 +21,19 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Servicio',
+          model: 'Servicios',
           Key: 'id',
           as: 'servicioId'
         }
       },
       puntajeDelProveedor: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       descripcionDelProveedor: {
         type: Sequelize.TEXT
       },
       puntajeDelCliente: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       descripcionDelCliente: {
         type: Sequelize.TEXT
@@ -54,6 +52,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Trabajo');
+    return queryInterface.dropTable('Trabajos');
   }
 };

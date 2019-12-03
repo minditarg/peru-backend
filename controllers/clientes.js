@@ -2,82 +2,73 @@ const categoria = require('../db/models').Categoria;
 const servicio = require('../db/models').Servicio;
 
 const Servicio = require('../db/models').Servicio;
-const Subcategoria = require('../db/models').Subcategoria;
-const Cliente = require('../db/models').Cliente;
+const Usuario = require('../db/models').Usuario;
+const Categoria = require('../db/models').Categoria;
 
-const Trabajo = require('../db/models').Trabajo;
+const Cliente = require('../db/models').Cliente;
 const ResponseFormat = require('../core').ResponseFormat;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 module.exports = {
     get(req, res) {
-        return Trabajo.findByPk(req.params.id,{
-            include: [
-                {
-                    model: Cliente,
-                    as: "cliente",
-                    include:[{model: Cliente, as: "Cliente" }]
-                },
-                {
-                    model: Servicio,
-                    as: "servicio",
-                }
-            ]
+        return Cliente.findByPk(req.params.id,{
         })
-        .then(Trabajo => res.status(201).json(ResponseFormat.build(
-            Trabajo,
-            "Detalle del trabajo",
+        .then(Cliente => res.status(201).json(ResponseFormat.build(
+            Cliente,
+            "Detalle del Cliente",
             201,
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
             error.message,
-            "Ocurrió un error al devolver el trabajo",
+            "Ocurrió un error al devolver el Cliente",
             "error"
         )))
     },
     create(req, res) {
-        return Trabajo
+        return Cliente
             .create({
-                clienteId: req.body.clienteId,
-                servicioId: req.body.servicioId,
-                puntajeDelProveedor: req.body.puntajeDelProveedor,
-                descripcionDelProveedor: req.body.descripcionDelProveedor,
+                usuarioId: req.body.usuarioId,
+                telefono: req.body.telefono,
+                direccion: req.body.direccion,
             })
-            .then(Trabajo => res.status(201).json(ResponseFormat.build(
-                Trabajo,
-                "Trabajo creado correctamente",
+            .then(cliente => res.status(201).json(ResponseFormat.build(
+                cliente,
+                "Cliente creado correctamente",
                 201,
                 "success"
             )))
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
                     error.message,
-                    "Ocurrió un error cuando se creaba el Trabajo " + error.message,
+                    "Ocurrió un error cuando se creaba el Cliente " + error.message,
                     "error"
                 ));
             })
     },
     
     list(req, res) {
-        return Trabajo
+        return Cliente
             .findAll({
                 include: [
                     {
-                        model: Cliente,
+                        model: Usuario,
+                        // as: "usuario",
+                        // include:[{model: Usuario, as: "Usuario" }]
                     },
-                    {
-                        model: Servicio,
-                    }
+                    // {
+                    //     model: Servicio,
+                    //     as: "servicio",
+                    // }
                 ]
             })
-            .then(Trabajo => {
-                if (!Trabajo) {
+            .then(clientes => {
+                if (!clientes) {
                     return res.status(404).json(
                         ResponseFormat.build(
                             {},
-                            "No se encontraron Trabajos",
+                            "No se encontraron Clientes",
                             404,
                             "error"
                         )
@@ -86,8 +77,8 @@ module.exports = {
 
                 return res.status(200).json(
                     ResponseFormat.build(
-                        Trabajo,
-                        "Listado de Trabajos",
+                        clientes,
+                        "Listado de Clientes",
                         200,
                         "success"
                     )
@@ -96,33 +87,33 @@ module.exports = {
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
                     error.message,
-                    "Ocurrio un error al devolver el listado de Trabajos",
+                    "Ocurrio un error al devolver el listado de Clientes",
                     500,
                     "error"
                 )
             ));
     },
     destroy(req, res) {
-        return Trabajo
+        return Cliente
             .findById(req.params.id)
-            .then(Trabajo => {
-                if (!Trabajo) {
+            .then(Cliente => {
+                if (!Cliente) {
                     return res.status(404).json(
                         ResponseFormat.error(
-                            "No se encuentra el Trabajo",
-                            "Ocurrió un error cuando se eliminaba el Trabajo",
+                            "No se encuentra el Cliente",
+                            "Ocurrió un error cuando se eliminaba el Cliente",
                             404,
                             "error"
                         )
                     );
                 }
 
-                return Trabajo
+                return Cliente
                     .destroy()
                     .then(() => res.status(200).json(
                         ResponseFormat.build(
                             {},
-                            "Trabajo eliminado correctamente",
+                            "Cliente eliminado correctamente",
                             200,
                             "success"
                         )
@@ -130,7 +121,7 @@ module.exports = {
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
                             error.message,
-                            "Ocurrió un error cuando se eliminaba el Trabajo: " + error.message,
+                            "Ocurrió un error cuando se eliminaba el Cliente: " + error.message,
                             500,
                             "error"
                         )
