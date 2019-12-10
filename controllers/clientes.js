@@ -21,7 +21,7 @@ module.exports = {
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
-            error.message,
+            error.errors.map(err => err.message).join(", "),
             "Ocurrió un error al devolver el Cliente",
             "error"
         )))
@@ -41,8 +41,8 @@ module.exports = {
             )))
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se creaba el Cliente " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se creaba el Cliente",
                     "error"
                 ));
             })
@@ -86,7 +86,7 @@ module.exports = {
             })
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
-                    error.message,
+                    error.errors.map(err => err.message).join(", "),
                     "Ocurrio un error al devolver el listado de Clientes",
                     500,
                     "error"
@@ -120,8 +120,8 @@ module.exports = {
                     ))
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
-                            error.message,
-                            "Ocurrió un error cuando se eliminaba el Cliente: " + error.message,
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se eliminaba el Cliente",
                             500,
                             "error"
                         )

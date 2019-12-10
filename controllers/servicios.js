@@ -30,7 +30,7 @@ module.exports = {
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
-            error.message,
+            error.errors.map(err => err.message).join(", "),
             "Ocurrió un error al devolver el servicio",
             "error"
         )))
@@ -45,6 +45,7 @@ module.exports = {
                 galeria.push({ foto: element.filename });
             });
         }
+        console.log(req.body)
         return servicio
             .create({
                 nombre: req.body.nombre,
@@ -73,9 +74,10 @@ module.exports = {
                 } catch (err) {
                     console.error(err)
                 }
+                console.log(error);
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se creaba el Servicio " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se creaba el Servicio",
                     "error"
                 ));
             })
@@ -163,18 +165,18 @@ module.exports = {
                         } catch (err) {
                             console.error(err)
                         }
-                        let errorMessage= error.name ==  "SequelizeForeignKeyConstraintError" ? ": la subcategoría es requerida" : "";
+                        // let errorMessage= error.name ==  "SequelizeForeignKeyConstraintError" ? ": la subcategoría es requerida" : "";
                         return res.status(400).json(ResponseFormat.error(
-                            error.message,
-                            "Ocurrió un error cuando se actualizaba el Servicio" + errorMessage,
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Servicio",
                             "error"
                         ));
                     })
             })
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se actualizaba el Servicio: " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Servicio",
                     "error"
                 ));
             })
@@ -210,7 +212,7 @@ module.exports = {
             })
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
-                    error.message,
+                    error.errors.map(err => err.message).join(", "),
                     "Ocurrio un error al devolver el listado de servicios",
                     500,
                     "error"
@@ -244,56 +246,12 @@ module.exports = {
                     ))
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
-                            error.message,
-                            "Ocurrió un error cuando se eliminaba el Servicio: " + error.message,
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se eliminaba el Servicio",
                             500,
                             "error"
                         )
                     ));
             });
     }
-    // create(req, res) {
-    //     let galeria = Array();
-    //     if (req.body.foto != null) {
-    //         req.body.foto.forEach(element => {
-    //             console.log(element);
-    //             var base64Data = element.foto.replace('/^data:image\/png;base64,/', "");
-    //             nombreFoto = Date.now() + ".png";
-    //             galeria.push( { foto :  nombreFoto } );
-    //             require("fs").writeFile(process.env.PATH_FILES_UPLOAD + nombreFoto, base64Data, 'base64', function (err) {
-    //                 console.log(err);
-    //             });
-    //         });
-    //     }
-
-    //     let fotoDestacada = req.body.foto != null ? galeria[0] : null;
-    //     if (req.body.foto != null) galeria.shift();
-
-    //     return servicio
-    //         .create({
-    //             nombre: req.body.nombre,
-    //             descripcion: req.body.descripcion,
-    //             foto: fotoDestacada.foto,
-    //             subcategoriaId: req.body.subcategoriaId,
-    //             proveedorId: req.body.proveedorId,
-    //             galeria: req.body.foto
-    //         }, {
-    //             include: [{
-
-    //                 association: "galeria",
-    //                 as: 'galeria'
-    //             }]
-    //         })
-    //         .then(servicio => res.status(201).json(ResponseFormat.build(
-    //             servicio,
-    //             "Servicio creado correctamente",
-    //             201,
-    //             "success"
-    //         )))
-    //         .catch(error => res.status(400).json(ResponseFormat.error(
-    //             error.message,
-    //             "Ocurrió un error cuando se creaba el Servicio",
-    //             "error"
-    //         )))
-    // },
 }

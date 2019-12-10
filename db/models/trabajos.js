@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El Cliente es requerido.'
+          msg: 'el Cliente es requerido'
         }
       }
     },
@@ -15,11 +15,19 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El Servicio es requerido.'
+          msg: 'el Servicio es requerido'
         }
       }
     },
-    puntajeDelProveedor: DataTypes.INTEGER,
+    puntajeDelProveedor: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'el puntaje es requerido'
+        }
+      }
+    },
     descripcionDelProveedor: DataTypes.TEXT,
     puntajeDelCliente: DataTypes.INTEGER,
     descripcionDelCliente: DataTypes.TEXT

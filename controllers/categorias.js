@@ -14,7 +14,7 @@ module.exports = {
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
-            error.message,
+            error.errors.map(err => err.message).join(", "),
             "Ocurrió un error cuando se creaba la Categoría",
             "error"
         )))
@@ -50,7 +50,7 @@ module.exports = {
         })
         .catch(error => res.status(500).json(
             ResponseFormat.error(
-                error.message,
+                error.errors.map(err => err.message).join(", "),
                 "Ocurrio un error al devolver el listado de Categorías",
                 500,
                 "error"
@@ -84,8 +84,8 @@ module.exports = {
             ))
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se eliminaba la Categoría",
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se eliminaba la Categoría"  ,
                     500,
                     "error"
                 )

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El nombre es requerido.'
+          msg: 'el nombre es requerido'
         }
       }
     },
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'La Subcategoría es requerida.'
+          msg: 'la subcategoría es requerida'
         }
       }
     },
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El Proveedor es requerido.'
+          msg: 'el proveedor es requerido'
         }
       }
     }

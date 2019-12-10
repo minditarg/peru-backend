@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       validate:{
         notNull: {
-          msg: 'El nombre es requerido.'
+          msg: 'el nombre es requerido.'
         }
       }
     }

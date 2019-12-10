@@ -25,7 +25,7 @@ module.exports = {
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
             error.message,
-            "Ocurrió un error al devolver el Usuario",
+            "Ocurrió un error al devolver el Usuario:"  + error.errors.map(err => err.message).join(", "),
             "error"
         )))
     },

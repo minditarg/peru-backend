@@ -43,7 +43,7 @@ module.exports = {
             .catch(error => { 
                 return res.status(404).json(
                     ResponseFormat.build(
-                        error.message,
+                        error.errors.map(err => err.message).join(", "),
                         "Ocurrió un error cuando se creaba el Usuario",
                         404,
                         "error"

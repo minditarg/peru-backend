@@ -4,7 +4,7 @@ const servicio = require('../db/models').Servicio;
 const Servicio = require('../db/models').Servicio;
 const Subcategoria = require('../db/models').Subcategoria;
 const Cliente = require('../db/models').Cliente;
-
+const Usuario = require('../db/models').Usuario;
 const Trabajo = require('../db/models').Trabajo;
 const ResponseFormat = require('../core').ResponseFormat;
 var Sequelize = require('sequelize');
@@ -17,7 +17,7 @@ module.exports = {
                 {
                     model: Cliente,
                     as: "cliente",
-                    include:[{model: Cliente, as: "Cliente" }]
+                    include:[{model: Cliente, as: "Cliente", include: [{model: models.Usuario}] } ]
                 },
                 {
                     model: Servicio,
@@ -32,7 +32,7 @@ module.exports = {
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
-            error.message,
+            error.errors.map(err => err.message).join(", "),
             "Ocurrió un error al devolver el trabajo",
             "error"
         )))
@@ -53,8 +53,8 @@ module.exports = {
             )))
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se creaba el Trabajo " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se creaba el Trabajo",
                     "error"
                 ));
             })
@@ -66,6 +66,7 @@ module.exports = {
                 include: [
                     {
                         model: Cliente,
+                        include: [{model: Usuario}]
                     },
                     {
                         model: Servicio,
@@ -95,7 +96,7 @@ module.exports = {
             })
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
-                    error.message,
+                    error.errors.map(err => err.message).join(", "),
                     "Ocurrio un error al devolver el listado de Trabajos",
                     500,
                     "error"
@@ -129,8 +130,8 @@ module.exports = {
                     ))
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
-                            error.message,
-                            "Ocurrió un error cuando se eliminaba el Trabajo: " + error.message,
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se eliminaba el Trabajo" ,
                             500,
                             "error"
                         )

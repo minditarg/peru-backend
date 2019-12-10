@@ -31,8 +31,8 @@ module.exports = {
                     console.error(err)
                 }
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se creaba el Proveedor: " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se creaba el Proveedor",
                     "error"
                 ));
             })
@@ -90,16 +90,16 @@ module.exports = {
                             console.error(err)
                         }
                         return res.status(400).json(ResponseFormat.error(
-                            error.message,
-                            "Ocurrió un error cuando se actualizaba el Proveedor: " + error.message,
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Proveedor" ,
                             "error"
                         ));
                     })
             })
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
-                    error.message,
-                    "Ocurrió un error cuando se actualizaba el Proveedor: " + error.message,
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Proveedor",
                     "error"
                 ));
             })
@@ -135,7 +135,7 @@ module.exports = {
             })
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
-                    error.message,
+                    error.errors.map(err => err.message).join(", "),
                     "Ocurrio un error al devolver el listado de Proveedores",
                     500,
                     "error"
@@ -171,7 +171,7 @@ module.exports = {
                     ))
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
-                            error.message,
+                            error.errors.map(err => err.message).join(", "),
                             "Ocurrió un error cuando se eliminaba el Proveedor",
                             500,
                             "error"

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El nombre es requerido.'
+          msg: 'el nombre es requerido.'
         },
         // isUnique(value, next) {
         //   Proveedor.findOne({
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'El email es requerido.'
+          msg: 'el email es requerido.'
         },
         isEmail: true
       }
