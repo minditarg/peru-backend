@@ -6,6 +6,7 @@ const categoriasController = require('../controllers').categorias
 const proveedoresController = require('../controllers').proveedores
 const trabajosController = require('../controllers').trabajos
 const clientesController = require('../controllers').clientes
+const localidadesController = require('../controllers').localidades
 const customMdw = require('../middleware/custom');
 const uploadImage = require('../middleware/uploadImage');
 const passport = require("passport");
@@ -19,7 +20,9 @@ module.exports = (app) => {
     // app.get('/api/users/:userId', userController.getUserDetails);
     // app.put('/api/users/:userId', userController.update);
     // app.delete('/api/users/:userId', userController.destroy);
-
+    
+    app.post('/api/servicio/buscar', serviciosController.buscar);
+    app.get('/api/localidades', localidadesController.list);
     
     app.get('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.get);
     app.get('/api/servicios', customMdw.ensureAuthenticated, serviciosController.list);
@@ -27,7 +30,7 @@ module.exports = (app) => {
     app.post('/api/servicio/:id',[customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.update);
     app.delete('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
 
-    app.get('/api/categorias', customMdw.ensureAuthenticated, categoriasController.list);
+    app.get('/api/categorias', categoriasController.list);
     app.post('/api/categorias', customMdw.ensureAuthenticated, categoriasController.create);
     app.delete('/api/categorias/:id', customMdw.ensureAuthenticated, categoriasController.destroy);
 

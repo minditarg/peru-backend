@@ -5,6 +5,7 @@ const proveedores = require('./proveedores');
 const usuario = require('./usuario');
 const trabajos = require('./trabajos');
 const clientes = require('./clientes');
+const localidades = require('./localidades');
 
 module.exports = {
     login,
@@ -13,5 +14,6 @@ module.exports = {
     proveedores,
     trabajos,
     clientes,
-    usuario
+    usuario,
+    localidades
 }

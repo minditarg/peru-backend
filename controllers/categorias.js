@@ -38,7 +38,6 @@ module.exports = {
                     )
                 )
             }
-            console.log(categoria);
             return res.status(200).json(
                 ResponseFormat.build(
                     categoria,

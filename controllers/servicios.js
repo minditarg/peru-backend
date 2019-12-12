@@ -4,18 +4,20 @@ const servicio = require('../db/models').Servicio;
 const ServicioFoto = require('../db/models').ServicioFoto;
 const Subcategoria = require('../db/models').Subcategoria;
 const Categoria = require('../db/models').Categoria;
+const Localidad = require('../db/models').Localidad;
+const Proveedor = require('../db/models').Proveedor;
 const ResponseFormat = require('../core').ResponseFormat;
 var Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 module.exports = {
     get(req, res) {
-        return servicio.findByPk(req.params.id,{
+        return servicio.findByPk(req.params.id, {
             include: [
                 {
                     model: Subcategoria,
                     as: "subcategoria",
-                    include:[{model: Categoria, as: "categoria" }]
+                    include: [{ model: Categoria, as: "categoria" }]
                 },
                 {
                     model: ServicioFoto,
@@ -23,17 +25,17 @@ module.exports = {
                 }
             ]
         })
-        .then(servicio => res.status(201).json(ResponseFormat.build(
-            servicio,
-            "Detalle del servicio",
-            201,
-            "success"
-        )))
-        .catch(error => res.status(400).json(ResponseFormat.error(
-            error.errors.map(err => err.message).join(", "),
-            "Ocurrió un error al devolver el servicio",
-            "error"
-        )))
+            .then(servicio => res.status(201).json(ResponseFormat.build(
+                servicio,
+                "Detalle del servicio",
+                201,
+                "success"
+            )))
+            .catch(error => res.status(400).json(ResponseFormat.error(
+                error.errors.map(err => err.message).join(", "),
+                "Ocurrió un error al devolver el servicio",
+                "error"
+            )))
     },
     create(req, res) {
         let galeria = Array();
@@ -45,7 +47,6 @@ module.exports = {
                 galeria.push({ foto: element.filename });
             });
         }
-        console.log(req.body)
         return servicio
             .create({
                 nombre: req.body.nombre,
@@ -84,7 +85,7 @@ module.exports = {
     },
     update(req, res) {
         return servicio
-            .findByPk(req.params.id,{
+            .findByPk(req.params.id, {
                 include: [
                     {
                         model: ServicioFoto,
@@ -134,7 +135,7 @@ module.exports = {
                     .then(serv => {
                         //elimino las fotos anteriores
                         galeria.forEach(img => {
-                            ServicioFoto.create({foto: img.foto, servicioId: serv.id});
+                            ServicioFoto.create({ foto: img.foto, servicioId: serv.id });
                         });
                         try {
                             pathFotosEliminar.forEach(fotoPath => {
@@ -144,11 +145,11 @@ module.exports = {
                             console.error(err)
                         }
                         ServicioFoto.destroy({
-                            where: { 
+                            where: {
                                 servicioId: req.params.id,
                                 foto: {
                                     [Op.or]: pathFotosEliminar
-                                  }
+                                }
                             }
                         });
 
@@ -252,6 +253,61 @@ module.exports = {
                             "error"
                         )
                     ));
+            });
+    },
+    buscar(req, res) {
+        return servicio
+            .findAll({
+                where: {
+                    ...(req.body.subcategoriaId && { subcategoriaId: req.body.subcategoriaId }),
+                },
+                include: [
+                    {
+                        model: Subcategoria, as: 'subcategoria',
+                        where: {
+                            categoriaId: req.body.categoriaId,
+                        },
+                        required: typeof req.body.categoriaId !== 'undefined'
+                    },
+                    {
+                        model: Proveedor,
+                        where: {
+                            localidadId: req.body.localidadId,
+                        },
+                        required: typeof req.body.localidadId !== 'undefined'
+                    }
+                ]
+            })
+            .then(servicio => {
+                if (!servicio) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontraron servicios",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        servicio,
+                        "Listado de servicios",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => {
+                console.log(error, "erorrr");
+                return res.status(500).json(
+                    ResponseFormat.error(
+                        error,
+                        "Ocurrio un error al devolver el resultado de servicios",
+                        500,
+                        "error"
+                    )
+                );
             });
     }
 }
