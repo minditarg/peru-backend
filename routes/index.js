@@ -56,7 +56,8 @@ module.exports = (app) => {
     app.get('/api/trabajo/listadoPorProveedor/:id', customMdw.ensureAuthenticated, trabajosController.list);
     app.delete('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.destroy);
 
-
+    app.get('/api/trabajo/listadoPorClienteCalificados/:id', customMdw.ensureAuthenticated, trabajosController.listadoPorClienteCalificados);
+    app.get('/api/trabajo/listadoPorClienteSinCalificar/:id', customMdw.ensureAuthenticated, trabajosController.listadoPorClienteSinCalificar);
 
      app.post('/api/cliente', customMdw.ensureAuthenticated, clientesController.create);
     // app.get('/api/cliente/:id', customMdw.ensureAuthenticated, clientesController.get);

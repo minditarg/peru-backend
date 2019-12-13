@@ -14,6 +14,7 @@ module.exports = {
                 descripcion: req.body.descripcion,
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
+                localidadId: req.body.localidadId,
                 foto: req.file != null ? req.file.filename : null,
                 usuarioId: req.body.usuarioId
             })
@@ -73,6 +74,7 @@ module.exports = {
                         email: req.body.email,
                         descripcion: req.body.descripcion,
                         direccion: req.body.direccion,
+                        localidadId: req.body.localidadId,
                         telefono: req.body.telefono,
                         foto: foto,
                         usuarioId: req.body.usuarioId

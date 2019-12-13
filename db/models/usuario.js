@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     provider: DataTypes.ENUM('Local', 'Facebook', 'Google'),
     providerId: DataTypes.STRING,
     avatar: DataTypes.STRING,
-    token: DataTypes.STRING
+    token: DataTypes.STRING,
+    esCliente: DataTypes.BOOLEAN
   }, {});
   Usuario.associate = function(models) {
     // associations can be defined here

@@ -25,11 +25,27 @@ module.exports = {
                 }
                 else {
                     var hash = bcrypt.hashSync(req.body.password, parseInt(process.env.BCRYPT_ROUNDS));
+                    //si es tipo cliente tmb debe crearse el registro de cliente
+                    if(req.body.esCliente){
+                        return Usuario
+                        .create({
+                            password: hash,
+                            email: req.body.email,
+                            esCliente: req.body.esCliente
+                        }).then(usuario=> {
+                            return Cliente.create({
+                                usuarioId:  usuario.id
+                            })
+                        })
+                    }
+                    else{ 
                     return Usuario
                         .create({
                             password: hash,
-                            email: req.body.email
+                            email: req.body.email,
+                            esCliente: req.body.esCliente
                         })
+                    }
                 }
             })
             .then(usuario => {
@@ -41,6 +57,7 @@ module.exports = {
                 ));
             })
             .catch(error => { 
+                console.log(error);
                 return res.status(404).json(
                     ResponseFormat.build(
                         error.errors.map(err => err.message).join(", "),

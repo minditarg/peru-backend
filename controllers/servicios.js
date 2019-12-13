@@ -267,14 +267,14 @@ module.exports = {
                         where: {
                             categoriaId: req.body.categoriaId,
                         },
-                        required: typeof req.body.categoriaId !== 'undefined'
+                        required: typeof req.body.categoriaId !== 'undefined' &&  req.body.categoriaId!= ""
                     },
                     {
                         model: Proveedor,
                         where: {
                             localidadId: req.body.localidadId,
                         },
-                        required: typeof req.body.localidadId !== 'undefined'
+                        required: typeof req.body.localidadId !== 'undefined'  &&  req.body.localidadId!= ""
                     }
                 ]
             })

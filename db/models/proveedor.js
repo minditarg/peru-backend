@@ -37,6 +37,9 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true
       }
     },
+    localidadId: {
+      type: DataTypes.INTEGER,
+    },
     foto: DataTypes.STRING,
     telefono: DataTypes.STRING
   }, {});
@@ -48,6 +51,8 @@ module.exports = (sequelize, DataTypes) => {
       as: 'servicios'
     });
     Proveedor.belongsTo(models.Usuario, {foreignKey: 'usuarioId',});
+    
+    Proveedor.belongsTo(models.Localidad, {foreignKey: 'localidadId', as: 'localidad'});
   };
   return Proveedor;
 };

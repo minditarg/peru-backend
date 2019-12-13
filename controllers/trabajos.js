@@ -12,12 +12,12 @@ const Op = Sequelize.Op;
 const fs = require('fs');
 module.exports = {
     get(req, res) {
-        return Trabajo.findByPk(req.params.id,{
+        return Trabajo.findByPk(req.params.id, {
             include: [
                 {
                     model: Cliente,
                     as: "cliente",
-                    include:[{model: Cliente, as: "Cliente", include: [{model: models.Usuario}] } ]
+                    include: [{ model: Cliente, as: "Cliente", include: [{ model: models.Usuario }] }]
                 },
                 {
                     model: Servicio,
@@ -25,17 +25,17 @@ module.exports = {
                 }
             ]
         })
-        .then(Trabajo => res.status(201).json(ResponseFormat.build(
-            Trabajo,
-            "Detalle del trabajo",
-            201,
-            "success"
-        )))
-        .catch(error => res.status(400).json(ResponseFormat.error(
-            error.errors.map(err => err.message).join(", "),
-            "Ocurrió un error al devolver el trabajo",
-            "error"
-        )))
+            .then(Trabajo => res.status(201).json(ResponseFormat.build(
+                Trabajo,
+                "Detalle del trabajo",
+                201,
+                "success"
+            )))
+            .catch(error => res.status(400).json(ResponseFormat.error(
+                error.errors.map(err => err.message).join(", "),
+                "Ocurrió un error al devolver el trabajo",
+                "error"
+            )))
     },
     create(req, res) {
         return Trabajo
@@ -59,14 +59,14 @@ module.exports = {
                 ));
             })
     },
-    
+
     list(req, res) {
         return Trabajo
             .findAll({
                 include: [
                     {
                         model: Cliente,
-                        include: [{model: Usuario}]
+                        include: [{ model: Usuario }]
                     },
                     {
                         model: Servicio,
@@ -131,12 +131,107 @@ module.exports = {
                     .catch(error => res.status(500).json(
                         ResponseFormat.error(
                             error.errors.map(err => err.message).join(", "),
-                            "Ocurrió un error cuando se eliminaba el Trabajo" ,
+                            "Ocurrió un error cuando se eliminaba el Trabajo",
                             500,
                             "error"
                         )
                     ));
             });
-    }
-    
+    },
+    listadoPorClienteSinCalificar(req, res) {
+        return Trabajo
+            .findAll({
+                where: {
+                    clienteId: req.params.id,
+                    puntajeDelCliente: null
+                },
+                include: [
+                    {
+                        model: Cliente,
+                        include: [{ model: Usuario }]
+                    },
+                    {
+                        model: Servicio,
+                    }
+                ]
+            })
+            .then(Trabajo => {
+                if (!Trabajo) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontraron Trabajos",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        Trabajo,
+                        "Listado de Trabajos",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => res.status(500).json(
+                ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrio un error al devolver el listado de Trabajos",
+                    500,
+                    "error"
+                )
+            ));
+    },
+    listadoPorClienteCalificados(req, res) {
+        return Trabajo
+            .findAll({
+                where: {
+                    clienteId: req.params.id,
+                    puntajeDelCliente: {
+                        [Op.ne]: null
+                    }
+                },
+                include: [
+                    {
+                        model: Cliente,
+                        include: [{ model: Usuario }]
+                    },
+                    {
+                        model: Servicio,
+                    }
+                ]
+            })
+            .then(Trabajo => {
+                if (!Trabajo) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontraron Trabajos",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        Trabajo,
+                        "Listado de Trabajos",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => res.status(500).json(
+                ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrio un error al devolver el listado de Trabajos",
+                    500,
+                    "error"
+                )
+            ));
+    },
 }

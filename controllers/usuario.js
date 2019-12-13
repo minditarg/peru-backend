@@ -2,6 +2,7 @@ const usuario = require('../db/models').Usuario;
 const Proveedor = require('../db/models').Proveedor;
 const Cliente = require('../db/models').Cliente;
 const Servicio = require('../db/models').Servicio;
+const Localidad = require('../db/models').Localidad;
 const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
     get(req, res) {
@@ -9,7 +10,7 @@ module.exports = {
             include: [
                 {
                     model: Proveedor,
-                    include:[{model: Servicio, as: "servicios" }]
+                    include:[{model: Servicio, as: "servicios" }, {model: Localidad, as: "localidad" }]
                   
                 },
                 {
