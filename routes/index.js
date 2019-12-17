@@ -24,7 +24,7 @@ module.exports = (app) => {
     app.post('/api/servicio/buscar', serviciosController.buscar);
     app.get('/api/localidades', localidadesController.list);
     
-    app.get('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.get);
+    app.get('/api/servicio/:id', serviciosController.get);
     app.get('/api/servicios', customMdw.ensureAuthenticated, serviciosController.list);
     app.post('/api/servicio', [customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.create);
     app.post('/api/servicio/:id',[customMdw.ensureAuthenticated, uploadImage.array('fotos',10)], serviciosController.update);
@@ -46,6 +46,8 @@ module.exports = (app) => {
     app.get('/api/auth/facebook', loginController.loginFacebook);
     app.get('/api/auth/facebook/callback', loginController.loginFacebookCallback);
 
+    app.get('/api/auth/google', loginController.loginGoogle);
+    app.get('/api/auth/google/callback', loginController.loginGoogleCallback);
 
     app.get('/api/usuario/perfil/:id', customMdw.ensureAuthenticated, usuarioController.get);
     app.get('/api/usuario/perfilPorToken/', customMdw.ensureAuthenticated, usuarioController.get);
@@ -55,6 +57,8 @@ module.exports = (app) => {
     app.get('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.get);
     app.get('/api/trabajo/listadoPorProveedor/:id', customMdw.ensureAuthenticated, trabajosController.list);
     app.delete('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.destroy);
+    app.post('/api/trabajo/puntuarTrabajo', customMdw.ensureAuthenticated, trabajosController.puntuarTrabajo);
+    
 
     app.get('/api/trabajo/listadoPorClienteCalificados/:id', customMdw.ensureAuthenticated, trabajosController.listadoPorClienteCalificados);
     app.get('/api/trabajo/listadoPorClienteSinCalificar/:id', customMdw.ensureAuthenticated, trabajosController.listadoPorClienteSinCalificar);

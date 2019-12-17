@@ -5,6 +5,7 @@ const ServicioFoto = require('../db/models').ServicioFoto;
 const Subcategoria = require('../db/models').Subcategoria;
 const Categoria = require('../db/models').Categoria;
 const Localidad = require('../db/models').Localidad;
+const ServicioVideos = require('../db/models').ServicioVideos;
 const Proveedor = require('../db/models').Proveedor;
 const ResponseFormat = require('../core').ResponseFormat;
 var Sequelize = require('sequelize');
@@ -22,6 +23,13 @@ module.exports = {
                 {
                     model: ServicioFoto,
                     as: "galeria",
+                },
+                {
+                    model: ServicioVideos,
+                    as: "videos",
+                },
+                {
+                    model: Proveedor
                 }
             ]
         })

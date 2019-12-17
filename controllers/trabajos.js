@@ -4,6 +4,7 @@ const servicio = require('../db/models').Servicio;
 const Servicio = require('../db/models').Servicio;
 const Subcategoria = require('../db/models').Subcategoria;
 const Cliente = require('../db/models').Cliente;
+const Proveedor = require('../db/models').Proveedor;
 const Usuario = require('../db/models').Usuario;
 const Trabajo = require('../db/models').Trabajo;
 const ResponseFormat = require('../core').ResponseFormat;
@@ -55,6 +56,48 @@ module.exports = {
                 return res.status(400).json(ResponseFormat.error(
                     error.errors.map(err => err.message).join(", "),
                     "Ocurrió un error cuando se creaba el Trabajo",
+                    "error"
+                ));
+            })
+    },
+    puntuarTrabajo(req, res) {
+        return Trabajo
+            .findByPk(req.body.trabajoId)
+            .then(trabajo => {
+                if (!trabajo) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el trabajo",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                return trabajo
+                    .update({
+                        puntajeDelCliente: req.body.puntajeDelCliente,
+                        descripcionDelCliente: req.body.descripcionDelCliente,
+
+                    })
+                    .then(trabajo => res.status(201).json(ResponseFormat.build(
+                        trabajo,
+                        "Trabajo actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
+                        return res.status(400).json(ResponseFormat.error(
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Trabajo",
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Trabajo",
                     "error"
                 ));
             })
@@ -152,7 +195,9 @@ module.exports = {
                     },
                     {
                         model: Servicio,
-                    }
+                        include: [{ model: Proveedor, include: [{ model: Usuario }] }]
+                    },
+
                 ]
             })
             .then(Trabajo => {
@@ -176,14 +221,18 @@ module.exports = {
                     )
                 )
             })
-            .catch(error => res.status(500).json(
-                ResponseFormat.error(
-                    error.errors.map(err => err.message).join(", "),
-                    "Ocurrio un error al devolver el listado de Trabajos",
-                    500,
-                    "error"
+            .catch(error => {
+                console.log(error);
+                return res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el listado de Trabajos",
+                        500,
+                        "error"
+                    )
+
                 )
-            ));
+            });
     },
     listadoPorClienteCalificados(req, res) {
         return Trabajo
@@ -201,7 +250,8 @@ module.exports = {
                     },
                     {
                         model: Servicio,
-                    }
+                        include: [{ model: Proveedor, include: [{ model: Usuario }] }]
+                    },
                 ]
             })
             .then(Trabajo => {

@@ -12,6 +12,7 @@ const passport = require("passport");
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcrypt');
 const User = require('./db/models').Usuario;
@@ -24,7 +25,7 @@ var cors = require('cors');
 // view engine setup
 app.use(logger('dev'));
 //app.use(express.json());
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(passport.initialize());
@@ -63,14 +64,14 @@ passport.use(new LocalStrategy({
       email: username
     }
   })
-    .then(data => { 
+    .then(data => {
       if (data === null) {
         return done(null, false);
       }//el usuario no existe
-      else if (!bcrypt.compareSync(password, data.password)) {  return done(null, false); } //no coincide la password
+      else if (!bcrypt.compareSync(password, data.password)) { return done(null, false); } //no coincide la password
       return done(null, data); //login ok
     })
-    .catch(err =>  done(err, null)) // error en DB
+    .catch(err => done(err, null)) // error en DB
 }));
 
 /** config de estrategia jwt de passport ******/
@@ -93,11 +94,9 @@ passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
     .catch(err => done(err, null))
 }));
 //FIN autenticacion LOCAL
+
+
 //INICIO autorizacion por facebook
-
-
-
-
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -111,48 +110,36 @@ passport.use(new FacebookStrategy({
   })
     .then(data => {
       if (data === null) {
-        return done(null, profile,null);
+        return done(null, profile, null);
       }
-      return done(null, profile,null); 
+      return done(null, profile, null);
     })
     .catch(err => console.log("Hubo un error", err)) // error en DB
 }
-
 ));
+//fin inicio por facebook
 
-
-
-
-
-// passport.use(new FacebookStrategy({
-//   clientID: process.env.FACEBOOK_APP_ID,
-//   clientSecret: process.env.FACEBOOK_APP_SECRET,
-//   callbackURL: process.env.FACEBOOK_APP_CALLBACK,
-//   profileFields: ['id', 'displayName', 'photos', 'email']
-// },
-// function(accessToken, refreshToken, profile, done) { console.log("entree");
-//   User.findOne({where: { providerId: profile.id }}, function(err, user) {   console.log("ha2aay que crear un nuevo usuarioo");
-//     if(err) throw(err);
-//     if(!err && user!= null) return done(null, user);
-//     console.log("haaay que crear un nuevo usuarioo");
-//     var user = new Usuario({
-//       provider_id: profile.id,
-//       provider: profile.provider,
-//       nombre: profile.displayName,
-//       avatar: profile.photos[0].value
-//     });
-//     user.save(function(err) {
-//       if(err) throw err;
-//       done(null, user);
-//     });
-//   });
-// }
-// ));
-//FIN autorizacion por facebook
-
-//conectamos todos los middleware de terceros
-
-//app.use('/public', express.static(process.cwd() + '/public'));
+//inicio atorizacion por google
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_APP_CALLBACK
+}, (token, tokenSecret, profile, done) => {
+  User.findOne({
+    where: {
+      providerId: profile.id
+    }
+  })
+    .then(data => {
+      if (data === null) {
+        return done(null, profile, null);
+      }
+      return done(null, profile, null);
+    })
+    .catch(err => console.log("Hubo un error", err)) // error en DB
+}
+));
+//fin google
 
 
 //el último nuestro middleware para manejar errores
