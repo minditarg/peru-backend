@@ -47,7 +47,61 @@ module.exports = {
                 ));
             })
     },
-    
+    update(req, res) {
+        return Usuario
+            .findByPk(req.params.id)
+            .then(usr => {
+                if (!usr) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el usuario",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                let foto = usr.foto;
+                if (req.file != null) {
+                    try {
+                        fs.unlinkSync(process.env.PATH_FILES_UPLOAD + usr.foto);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                    foto = req.file.filename
+                }
+                return usr
+                    .update({
+                        nombre: req.body.nombre,
+                        avatar: foto,
+                    })
+                    .then(usuario => res.status(201).json(ResponseFormat.build(
+                        usuario,
+                        "Usuario actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
+                        try {
+                            fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                        } catch (err) {
+                            console.error(err)
+                        }
+                        return res.status(400).json(ResponseFormat.error(
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Usuario",
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Proveedor",
+                    "error"
+                ));
+            })
+    },
     list(req, res) {
         return Cliente
             .findAll({

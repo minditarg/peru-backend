@@ -6,6 +6,40 @@ const ResponseFormat = require('../core').ResponseFormat;
 const error_types = require('../core/error_types');
 const fs = require('fs');
 module.exports = {
+    get(req, res) {
+        return proveedor.findByPk(req.params.id)
+            .then(prov => {
+                if (!prov) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontró al proveedor",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        prov,
+                        "Listado de proveedor",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => {
+                res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el proveedor",
+                        500,
+                        "error"
+                    )
+                )
+            }
+            );
+    },
     create(req, res) {
         return proveedor
             .create({
@@ -41,7 +75,7 @@ module.exports = {
 
     update(req, res) {
         return proveedor
-            .findByPk(req.params.id,{
+            .findByPk(req.params.id, {
                 include: [{
                     model: servicios,
                     as: 'servicios'
@@ -93,7 +127,7 @@ module.exports = {
                         }
                         return res.status(400).json(ResponseFormat.error(
                             error.errors.map(err => err.message).join(", "),
-                            "Ocurrió un error cuando se actualizaba el Proveedor" ,
+                            "Ocurrió un error cuando se actualizaba el Proveedor",
                             "error"
                         ));
                     })

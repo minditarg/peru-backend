@@ -113,6 +113,9 @@ module.exports = {
                     },
                     {
                         model: Servicio,
+                        where: {
+                            proveedorId: req.params.id
+                        },
                     }
                 ]
             })

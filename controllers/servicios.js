@@ -15,7 +15,7 @@ const fs = require('fs');
 module.exports = {
     get(req, res) {
         return servicio.findByPk(req.params.id, {
-            attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            attributes: ['id', 'nombre', 'descripcion', 'foto','subcategoriaId', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
             group: ['id'],
             include: [
                 {
@@ -200,7 +200,68 @@ module.exports = {
     },
     list(req, res) {
         return servicio.findAll({
-            attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            attributes: ['id', 'nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            include: [
+                {
+                    model: Subcategoria,
+                    as: "subcategoria",
+                    include: [{ model: Categoria, as: "categoria" }]
+                },
+                {
+                    model: Trabajo,
+                    as: 'trabajos',
+                    attributes: []
+                },
+                {
+                    model: Proveedor
+                }
+
+            ],
+            group: ['servicio.id'],
+            order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']]
+        })
+            .then(servicio => {
+                if (!servicio) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontraron servicios",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        servicio,
+                        "Listado de servicios",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el listado de servicios",
+                        500,
+                        "error"
+                    )
+
+                )
+
+            }
+            );
+    },
+    listadoPorProveedor(req, res) {
+        return servicio.findAll({
+            where: {
+                proveedorId: req.params.id
+            },
+            attributes: ['id', 'nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
             include: [
                 {
                     model: Subcategoria,
@@ -297,11 +358,12 @@ module.exports = {
                     ));
             });
     },
+
     buscar(req, res) {
         return servicio
             .findAll({
 
-                attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+                attributes: ['id', 'nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
                 include: [
                     {
                         model: Trabajo,
