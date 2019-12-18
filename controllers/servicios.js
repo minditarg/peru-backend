@@ -6,6 +6,7 @@ const Subcategoria = require('../db/models').Subcategoria;
 const Categoria = require('../db/models').Categoria;
 const Localidad = require('../db/models').Localidad;
 const ServicioVideos = require('../db/models').ServicioVideos;
+const Trabajo = require('../db/models').Trabajo;
 const Proveedor = require('../db/models').Proveedor;
 const ResponseFormat = require('../core').ResponseFormat;
 var Sequelize = require('sequelize');
@@ -14,6 +15,8 @@ const fs = require('fs');
 module.exports = {
     get(req, res) {
         return servicio.findByPk(req.params.id, {
+            attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            group: ['id'],
             include: [
                 {
                     model: Subcategoria,
@@ -30,7 +33,12 @@ module.exports = {
                 },
                 {
                     model: Proveedor
-                }
+                },
+                {
+                    model: Trabajo,
+                    as: 'trabajos',
+                    attributes: []
+                },
             ]
         })
             .then(servicio => res.status(201).json(ResponseFormat.build(
@@ -191,13 +199,33 @@ module.exports = {
             })
     },
     list(req, res) {
-        return servicio
-            .findAll({
-                include: [{
-                    model: categoria,
-                    as: 'categoria'
-                }]
-            })
+        return servicio.findAll({
+            attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            include: [
+                {
+                    model: Subcategoria,
+                    as: "subcategoria",
+                    include: [{ model: Categoria, as: "categoria" }]
+                },
+                {
+                    model: Trabajo,
+                    as: 'trabajos',
+                    attributes: []
+                },
+                {
+                    model: Proveedor
+                }
+
+            ],
+            group: ['servicio.id'],
+            order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']]
+        })
+            // .findAll({
+            //     include: [{
+            //         model: categoria,
+            //         as: 'categoria'
+            //     }]
+            // })
             .then(servicio => {
                 if (!servicio) {
                     return res.status(404).json(
@@ -219,14 +247,20 @@ module.exports = {
                     )
                 )
             })
-            .catch(error => res.status(500).json(
-                ResponseFormat.error(
-                    error.errors.map(err => err.message).join(", "),
-                    "Ocurrio un error al devolver el listado de servicios",
-                    500,
-                    "error"
+            .catch(error => {
+                console.log(error);
+                res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el listado de servicios",
+                        500,
+                        "error"
+                    )
+
                 )
-            ));
+
+            }
+            );
     },
     destroy(req, res) {
         return servicio
@@ -266,25 +300,34 @@ module.exports = {
     buscar(req, res) {
         return servicio
             .findAll({
-                where: {
-                    ...(req.body.subcategoriaId && { subcategoriaId: req.body.subcategoriaId }),
-                },
+
+                attributes: ['id','nombre', 'descripcion', 'foto', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
                 include: [
+                    {
+                        model: Trabajo,
+                        as: 'trabajos',
+                        attributes: []
+                    },
                     {
                         model: Subcategoria, as: 'subcategoria',
                         where: {
                             categoriaId: req.body.categoriaId,
                         },
-                        required: typeof req.body.categoriaId !== 'undefined' &&  req.body.categoriaId!= ""
+                        required: typeof req.body.categoriaId !== 'undefined' && req.body.categoriaId != ""
                     },
                     {
                         model: Proveedor,
                         where: {
                             localidadId: req.body.localidadId,
                         },
-                        required: typeof req.body.localidadId !== 'undefined'  &&  req.body.localidadId!= ""
+                        required: typeof req.body.localidadId !== 'undefined' && req.body.localidadId != ""
                     }
-                ]
+                ],
+                group: ['servicio.id'],
+                order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']],
+                where: {
+                    ...(req.body.subcategoriaId && { subcategoriaId: req.body.subcategoriaId }),
+                },
             })
             .then(servicio => {
                 if (!servicio) {

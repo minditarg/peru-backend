@@ -46,6 +46,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'servicioId',
       as: 'videos'
     });
+    Servicio.hasMany(models.Trabajo, {
+      onDelete: 'CASCADE',
+      hooks: true, 
+      foreignKey: 'servicioId',
+      as:'trabajos'
+    });
   };
   return Servicio;
 };
