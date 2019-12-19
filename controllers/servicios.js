@@ -396,10 +396,11 @@ module.exports = {
                     {
                         model: Proveedor,
                         where: {
-                            localidadId: req.body.localidadId,
+                            //localidadId: req.body.localidadId,
+                            ...(req.body.localidadId && { localidadId: req.body.localidadId }),
                             ...(req.body.esSupervisado && { tipo: 'Supervisado' }),
                         },
-                        required: typeof req.body.localidadId !== 'undefined' && req.body.localidadId != ""
+                        required: (typeof req.body.localidadId !== 'undefined' && req.body.localidadId != "" ) || req.body.esSupervisado
                     }
                 ],
                 group: ['servicio.id'],
