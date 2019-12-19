@@ -249,11 +249,27 @@ module.exports = {
                 include: [
                     {
                         model: Cliente,
-                        include: [{ model: Usuario }]
+                        include: [
+                            {
+                                model: Usuario,
+                                attributes: {
+                                    exclude: ['password']
+                                }
+                            }
+                        ]
                     },
                     {
                         model: Servicio,
-                        include: [{ model: Proveedor, include: [{ model: Usuario }] }]
+                        include: [{
+                            model: Proveedor, include: [
+                                {
+                                    model: Usuario,
+                                    attributes: {
+                                        exclude: ['password']
+                                    }
+                                }
+                            ]
+                        }]
                     },
                 ]
             })

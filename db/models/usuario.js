@@ -19,11 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     avatar: DataTypes.STRING,
     token: DataTypes.STRING,
     esCliente: DataTypes.BOOLEAN
-  }, {
-    defaultScope: {
-      attributes: { exclude: ['password'] },
-    }
-  });
+  }, {});
   Usuario.associate = function (models) {
     // associations can be defined here
     Usuario.hasOne(models.Proveedor, { foreignKey: 'usuarioId' });

@@ -15,7 +15,7 @@ const fs = require('fs');
 module.exports = {
     get(req, res) {
         return servicio.findByPk(req.params.id, {
-            attributes: ['id', 'nombre', 'descripcion', 'foto','subcategoriaId', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            attributes: ['id', 'nombre', 'descripcion', 'foto', 'subcategoriaId', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
             group: ['id'],
             include: [
                 {
@@ -63,6 +63,17 @@ module.exports = {
                 galeria.push({ foto: element.filename });
             });
         }
+        let videos = Array();
+        if (req.body.videos != null) {
+            if (Array.isArray(req.body.videos)) {
+                req.body.videos.forEach(element => {
+                    videos.push({ video: element });
+                });
+            }
+            else {
+                videos.push({ video: req.body.videos });
+            }
+        }
         return servicio
             .create({
                 nombre: req.body.nombre,
@@ -70,11 +81,16 @@ module.exports = {
                 foto: fotoPrincipal != null ? fotoPrincipal.filename : null,
                 subcategoriaId: req.body.subcategoriaId,
                 proveedorId: req.body.proveedorId,
-                galeria: galeria
+                galeria: galeria,
+                videos: videos
             }, {
                 include: [{
                     association: "galeria",
                     as: 'galeria'
+                }],
+                include: [{
+                    association: "videos",
+                    as: 'videos'
                 }]
             })
             .then(servicio => res.status(201).json(ResponseFormat.build(
@@ -381,6 +397,7 @@ module.exports = {
                         model: Proveedor,
                         where: {
                             localidadId: req.body.localidadId,
+                            ...(req.body.esSupervisado && { tipo: 'Supervisado' }),
                         },
                         required: typeof req.body.localidadId !== 'undefined' && req.body.localidadId != ""
                     }

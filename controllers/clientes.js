@@ -108,13 +108,10 @@ module.exports = {
                 include: [
                     {
                         model: Usuario,
-                        // as: "usuario",
-                        // include:[{model: Usuario, as: "Usuario" }]
+                        attributes: {
+                            exclude: ['password']
+                        }
                     },
-                    // {
-                    //     model: Servicio,
-                    //     as: "servicio",
-                    // }
                 ]
             })
             .then(clientes => {
