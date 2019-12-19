@@ -7,7 +7,7 @@ const error_types = {
     Error401: function(msg){ //no autorizado
         let err = Error.apply(this, [msg]);
         this.name = err.name = "Error401";
-        this.message = err.message;
+        this.message = "No estás autorizdo para ingresar";
         this.stack = err.stack;
         return this;
     },
@@ -21,7 +21,7 @@ const error_types = {
     Error404: function(msg){ //no encontrado
         let err = Error.apply(this, [msg]);
         this.name = err.name = "Error404";
-        this.message = err.message;
+        this.message = "No se encuentra el recurso";
         this.stack = err.stack;
         return this;
     },
