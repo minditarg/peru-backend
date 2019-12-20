@@ -8,10 +8,10 @@ module.exports = {
     {nombre: "Avellaneda" },
     {nombre: "Quilmes" },
   ]
-   return queryInterface.bulkInsert('localidades', localidades, {});
+   return queryInterface.bulkInsert('Localidades', localidades, {});
   },
 
   down: (queryInterface, Sequelize) => {
-      return queryInterface.bulkDelete('localidades', null, {});
+      return queryInterface.bulkDelete('Localidades', null, {});
   }
 };
