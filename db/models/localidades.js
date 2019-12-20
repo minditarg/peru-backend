@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-  }, {tableName: "localidades"});
+  }, {tableName: "Localidades"});
   Localidad.associate = function(models) {
     // associations can be defined here
   };
