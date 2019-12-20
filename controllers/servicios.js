@@ -233,7 +233,7 @@ module.exports = {
                 }
 
             ],
-            group: ['servicio.id'],
+            group: ['Servicio.id'],
             order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']]
         })
             .then(servicio => {
@@ -294,7 +294,7 @@ module.exports = {
                 }
 
             ],
-            group: ['servicio.id'],
+            group: ['Servicio.id'],
             order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']]
         })
             // .findAll({
@@ -403,7 +403,7 @@ module.exports = {
                         required: (typeof req.body.localidadId !== 'undefined' && req.body.localidadId != "" ) || req.body.esSupervisado
                     }
                 ],
-                group: ['servicio.id'],
+                group: ['Servicio.id'],
                 order: [[Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'DESC']],
                 where: {
                     ...(req.body.subcategoriaId && { subcategoriaId: req.body.subcategoriaId }),
