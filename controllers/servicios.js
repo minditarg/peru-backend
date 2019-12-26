@@ -15,8 +15,8 @@ const fs = require('fs');
 module.exports = {
     get(req, res) {
         return servicio.findByPk(req.params.id, {
-            attributes: ['id', 'nombre', 'descripcion', 'foto', 'subcategoriaId', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
-            group: ['id'],
+            attributes: ['Servicio.id', 'nombre', 'descripcion', 'foto', 'subcategoriaId', [Sequelize.fn('AVG', Sequelize.col('trabajos.puntajeDelCliente')), 'puntaje']],
+            group: ['Servicio.id'],
             include: [
                 {
                     model: Subcategoria,
@@ -122,6 +122,10 @@ module.exports = {
                     {
                         model: ServicioFoto,
                         as: "galeria",
+                    },
+                    {
+                        association: "videos",
+                        as: 'videos'
                     }
                 ]
             })
@@ -150,6 +154,18 @@ module.exports = {
                         galeria.push({ foto: element.filename });
                     });
                 }
+                let videos = Array();
+                if (req.body.videos != null) {
+                    if (Array.isArray(req.body.videos)) {
+                        req.body.videos.forEach(element => {
+                            videos.push({ video: element });
+                        });
+                    }
+                    else {
+                        videos.push({ video: req.body.videos });
+                    }
+                }
+                
                 return serv
                     .update({
                         nombre: req.body.nombre,
@@ -157,17 +173,31 @@ module.exports = {
                         foto: fotoPrincipal != null ? fotoPrincipal.filename : null,
                         subcategoriaId: req.body.subcategoriaId,
                         proveedorId: req.body.proveedorId,
-                        galeria: galeria
+                        galeria: galeria,
+                        videos:videos
                     }, {
                         include: [{
                             association: "galeria",
                             as: 'galeria'
+                        }],
+                        include: [{
+                            association: "videos",
+                            as: 'videos'
                         }]
                     })
                     .then(serv => {
                         //elimino las fotos anteriores
                         galeria.forEach(img => {
                             ServicioFoto.create({ foto: img.foto, servicioId: serv.id });
+                        });
+                        ServicioVideos.destroy({
+                            where: {
+                                servicioId: serv.id ,
+                            }
+                        }).then(()=>{
+                            videos.forEach(video => {
+                                ServicioVideos.create({ video: video.video, servicioId: serv.id });
+                            });
                         });
                         try {
                             pathFotosEliminar.forEach(fotoPath => {
@@ -400,7 +430,7 @@ module.exports = {
                             ...(req.body.localidadId && { localidadId: req.body.localidadId }),
                             ...(req.body.esSupervisado && { tipo: 'Supervisado' }),
                         },
-                        required: (typeof req.body.localidadId !== 'undefined' && req.body.localidadId != "" ) || req.body.esSupervisado
+                        required: (typeof req.body.localidadId !== 'undefined' && req.body.localidadId != "") || req.body.esSupervisado
                     }
                 ],
                 group: ['Servicio.id'],

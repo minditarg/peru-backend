@@ -61,6 +61,8 @@ module.exports = (app) => {
     app.get('/api/usuario/perfil/:id', customMdw.ensureAuthenticated, usuarioController.get);
     app.get('/api/usuario/perfilPorToken/', customMdw.ensureAuthenticated, usuarioController.get);
 
+    app.post('/api/usuario/recuperarPassword/', usuarioController.recuperarPassword);
+    app.post('/api/usuario/cambiarPassword/', usuarioController.cambiarPassword);
 
     app.post('/api/trabajo', customMdw.ensureAuthenticated, trabajosController.create);
     app.get('/api/trabajo/:id', customMdw.ensureAuthenticated, trabajosController.get);
