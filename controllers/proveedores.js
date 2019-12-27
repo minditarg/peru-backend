@@ -41,7 +41,7 @@ module.exports = {
             );
     },
     getPremium(req, res) {
-        return proveedor.findAll({
+        return proveedor.findOne({
             include: [{
                 model: servicios,
                 as: 'servicios'

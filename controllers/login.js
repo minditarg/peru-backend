@@ -43,7 +43,8 @@ module.exports = {
                         .create({
                             password: hash,
                             email: req.body.email,
-                            esCliente: req.body.esCliente
+                            esCliente: req.body.esCliente,
+                            provider: 'Local',
                         })
                     }
                 }
