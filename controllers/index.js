@@ -7,6 +7,8 @@ const trabajos = require('./trabajos');
 const clientes = require('./clientes');
 const localidades = require('./localidades');
 
+const subcategorias = require('./subcategorias');
+
 module.exports = {
     login,
     servicios,
@@ -15,5 +17,6 @@ module.exports = {
     trabajos,
     clientes,
     usuario,
-    localidades
+    localidades,
+    subcategorias
 }

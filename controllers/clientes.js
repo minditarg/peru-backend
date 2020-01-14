@@ -97,7 +97,47 @@ module.exports = {
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
                     error.errors.map(err => err.message).join(", "),
-                    "Ocurrió un error cuando se actualizaba el Proveedor",
+                    "Ocurrió un error cuando se actualizaba el Usuario",
+                    "error"
+                ));
+            })
+    },
+    restore(req, res) {
+        return Cliente
+            .findByPk(req.params.id)
+            .then(cliente => {
+                if (!cliente) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el Cliente",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                return cliente
+                    .update({
+                        deletedAt: null
+                    })
+                    .then(usuario => res.status(201).json(ResponseFormat.build(
+                        usuario,
+                        "Cliente actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
+                        return res.status(400).json(ResponseFormat.error(
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Cliente",
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Cliente",
                     "error"
                 ));
             })
@@ -113,6 +153,53 @@ module.exports = {
                         }
                     },
                 ]
+            })
+            .then(clientes => {
+                if (!clientes) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontraron Clientes",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        clientes,
+                        "Listado de Clientes",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => res.status(500).json(
+                ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrio un error al devolver el listado de Clientes",
+                    500,
+                    "error"
+                )
+            ));
+    },
+    listEliminados(req, res) {
+        return Cliente
+            .findAll({
+                include: [
+                    {
+                        model: Usuario,
+                        attributes: {
+                            exclude: ['password']
+                        }
+                    },
+                ],
+                where: {
+                    url: {
+                        [Op.ne]: null
+                    }
+                }
             })
             .then(clientes => {
                 if (!clientes) {

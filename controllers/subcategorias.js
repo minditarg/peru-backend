@@ -3,51 +3,53 @@ const subcategoria = require('../db/models').Subcategoria;
 const ResponseFormat = require('../core').ResponseFormat;
 module.exports = {
     create(req, res) { 
-        return categoria
+        return subcategoria
         .create({
             nombre: req.body.nombre,
+            categoriaId: req.body.categoriaId
         })
-        .then(categoria => res.status(201).json(ResponseFormat.build(
-            categoria,
-            "Categoría creada correctamente",
+        .then(subcategoria => res.status(201).json(ResponseFormat.build(
+            subcategoria,
+            "Subcategoría creada correctamente",
             201,
             "success"
         )))
         .catch(error => res.status(400).json(ResponseFormat.error(
             error.errors.map(err => err.message).join(", "),
-            "Ocurrió un error cuando se creaba la Categoría",
+            "Ocurrió un error cuando se creaba la Subcategoría",
             "error"
         )))
     },
     update(req, res) {
-        return categoria
+        return subcategoria
             .findByPk(req.params.id)
-            .then(categoria => {
-                if (!categoria) {
+            .then(subcategoria => {
+                if (!subcategoria) {
                     return res.status(404).json(
                         ResponseFormat.error(
                             {},
-                            "No se encuentra la Categoría",
+                            "No se encuentra la Subcategoría",
                             404,
                             "error"
                         )
                     );
                 }
               
-                return categoria
+                return subcategoria
                     .update({
                         nombre: req.body.nombre,
+                        categoriaId: req.body.categoriaId
                     })
-                    .then(categoria => res.status(201).json(ResponseFormat.build(
-                        categoria,
-                        "Categoría actualizada correctamente",
+                    .then(subcategoria => res.status(201).json(ResponseFormat.build(
+                        subcategoria,
+                        "Subcategoría actualizada correctamente",
                         201,
                         "success"
                     )))
                     .catch(error => {
                         return res.status(400).json(ResponseFormat.error(
                             error.errors.map(err => err.message).join(", "),
-                            "Ocurrió un error cuando se actualizaba la Categoría",
+                            "Ocurrió un error cuando se actualizaba la Subcategoría",
                             "error"
                         ));
                     })
@@ -55,25 +57,25 @@ module.exports = {
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
                     error.errors.map(err => err.message).join(", "),
-                    "Ocurrió un error cuando se actualizaba la Categoría",
+                    "Ocurrió un error cuando se actualizaba la Subcategoría",
                     "error"
                 ));
             })
     },
     list (req, res) {
-        return categoria
+        return subcategoria
         .findAll({
             include: [
                 {
-                    model: subcategoria, as : "subcategorias"
+                    model: categoria, as : "categorias"
                 }]
         })
-        .then(categoria => {
-            if(!categoria) {
+        .then(subcategoria => {
+            if(!subcategoria) {
                 return res.status(404).json(
                     ResponseFormat.build(
                         {},
-                        "No se encontraron Categorías",
+                        "No se encontraron Subcategorías",
                         404,
                         "error"
                     )
@@ -81,8 +83,8 @@ module.exports = {
             }
             return res.status(200).json(
                 ResponseFormat.build(
-                    categoria,
-                    "Listado de Categorías",
+                    subcategoria,
+                    "Listado de Subcategorías",
                     200,
                     "success"
                 )
@@ -91,33 +93,33 @@ module.exports = {
         .catch(error => res.status(500).json(
             ResponseFormat.error(
                 error.errors.map(err => err.message).join(", "),
-                "Ocurrio un error al devolver el listado de Categorías",
+                "Ocurrio un error al devolver el listado de Subcategorías",
                 500,
                 "error"
             )
         ));
     },
     destroy (req, res) {
-        return categoria
+        return subcategoria
         .findById(req.params.id)
-        .then(categoria => {
-            if(!categoria) {
+        .then(subcategoria => {
+            if(!subcategoria) {
                 return res.status(404).json(
                     ResponseFormat.error(
-                        "No se encuentra la categoría",
-                        "Ocurrió un error cuando se eliminaba la Categoría",
+                        "No se encuentra la Subcategorías",
+                        "Ocurrió un error cuando se eliminaba la Subcategorías",
                         404,
                         "error"
                     )
                 );
             }
 
-            return categoria
+            return subcategoria
             .destroy()
             .then(() => res.status(200).json(
                ResponseFormat.build(
                  {},
-                 "Categoría eliminada correctamente",
+                 "Subcategorías eliminada correctamente",
                  200,
                  "success"
                )
@@ -125,7 +127,7 @@ module.exports = {
             .catch(error => res.status(500).json(
                 ResponseFormat.error(
                     error.errors.map(err => err.message).join(", "),
-                    "Ocurrió un error cuando se eliminaba la Categoría"  ,
+                    "Ocurrió un error cuando se eliminaba la Subcategorías"  ,
                     500,
                     "error"
                 )

@@ -5,6 +5,8 @@ const db = require('../db/models').db;
 const ResponseFormat = require('../core').ResponseFormat;
 const error_types = require('../core/error_types');
 const fs = require('fs');
+var Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 module.exports = {
     get(req, res) {
         return proveedor.findByPk(req.params.id)
@@ -40,6 +42,89 @@ module.exports = {
             }
             );
     },
+    list(req, res) {
+        return proveedor.findOne({
+            include: [{
+                model: servicios,
+                as: 'servicios'
+            }],
+        })
+            .then(prov => {
+                if (!prov) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontró al proveedor",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        prov[0],
+                        "Listado de proveedor",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => {
+                res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el proveedor",
+                        500,
+                        "error"
+                    )
+                )
+            }
+            );
+    },
+    listEliminados(req, res) {
+        return proveedor.findOne({
+            include: [{
+                model: servicios,
+                as: 'servicios'
+            }],
+            where: {
+                url: {
+                    [Op.ne]: null
+                }
+            }
+        })
+            .then(prov => {
+                if (!prov) {
+                    return res.status(404).json(
+                        ResponseFormat.build(
+                            {},
+                            "No se encontró al proveedor",
+                            404,
+                            "error"
+                        )
+                    )
+                }
+                return res.status(200).json(
+                    ResponseFormat.build(
+                        prov[0],
+                        "Listado de proveedor",
+                        200,
+                        "success"
+                    )
+                )
+            })
+            .catch(error => {
+                res.status(500).json(
+                    ResponseFormat.error(
+                        error.errors.map(err => err.message).join(", "),
+                        "Ocurrio un error al devolver el proveedor",
+                        500,
+                        "error"
+                    )
+                )
+            }
+            );
+    },
     getPremium(req, res) {
         return proveedor.findOne({
             include: [{
@@ -50,7 +135,7 @@ module.exports = {
             where: { tipo: 'Premium' }
         })
             .then(prov => {
-                if (!prov ) {
+                if (!prov) {
                     return res.status(404).json(
                         ResponseFormat.build(
                             {},
@@ -189,6 +274,7 @@ module.exports = {
                         direccion: req.body.direccion,
                         localidadId: req.body.localidadId,
                         telefono: req.body.telefono,
+                        tipo: req.body.tipo != null ? req.body.tipo : 'Standar',
                         foto: foto,
                         usuarioId: req.body.usuarioId
                     })
@@ -293,5 +379,45 @@ module.exports = {
                         )
                     ));
             });
-    }
+    },
+    restore(req, res) {
+        return proveedor
+            .findByPk(req.params.id)
+            .then(proveedor => {
+                if (!proveedor) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el proveedor",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                return proveedor
+                    .update({
+                        deletedAt: null
+                    })
+                    .then(usuario => res.status(201).json(ResponseFormat.build(
+                        usuario,
+                        "Proveedor actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
+                        return res.status(400).json(ResponseFormat.error(
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Proveedor",
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Proveedor",
+                    "error"
+                ));
+            })
+    },
 }

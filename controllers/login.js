@@ -115,6 +115,52 @@ module.exports = {
         })(req, res);
     },
 
+    loginWeb: (req, res, next) => {  
+        passport.authenticate("local", { session: false }, (error, user) => {
+            if (error || !user) {
+                return res.status(404).json(
+                    ResponseFormat.build(
+                        error ,
+                        "El usuario o la contraseña son incorrectos",
+                        404,
+                        "error"
+                    )
+                )
+            } else {
+                const payload = {
+                    sub: user.id,
+                    exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                    username: user.email
+                };
+                Usuario.findOne({
+                    where: { id: user.id },
+                    include: [
+                        {
+                            model: Proveedor,
+                            include:[{model: Servicio, as: "servicios" }],
+                            where: {tipo: 'Premium'}
+                        },
+                        {
+                            model: Cliente
+                        }
+                    ]
+                }).then(usuario => {
+
+                    const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+                    var resp = ResponseFormat.build(
+                        { tokens: token, user: usuario },
+                        "Login correcto",
+                        201,
+                        "success"
+                    );
+                    res.status(201).json(resp);
+                });
+
+            }
+
+        })(req, res);
+    },
+
     loginFacebook: (req, res, next) => {
         passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
             console.log(error, user, info);
