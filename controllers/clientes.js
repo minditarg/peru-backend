@@ -104,7 +104,7 @@ module.exports = {
     },
     restore(req, res) {
         return Cliente
-            .findByPk(req.params.id)
+            .findByPk(req.params.id, { paranoid: false })
             .then(cliente => {
                 if (!cliente) {
                     return res.status(404).json(
@@ -117,12 +117,10 @@ module.exports = {
                     );
                 }
                 return cliente
-                    .update({
-                        deletedAt: null
-                    })
-                    .then(usuario => res.status(201).json(ResponseFormat.build(
-                        usuario,
-                        "Cliente actualizado correctamente",
+                    .restore()
+                    .then(cliente => res.status(201).json(ResponseFormat.build(
+                        cliente,
+                        "Cliente restaurado correctamente",
                         201,
                         "success"
                     )))
@@ -196,10 +194,11 @@ module.exports = {
                     },
                 ],
                 where: {
-                    url: {
+                    deletedAt: {
                         [Op.ne]: null
                     }
-                }
+                },
+                paranoid: false
             })
             .then(clientes => {
                 if (!clientes) {
@@ -216,7 +215,7 @@ module.exports = {
                 return res.status(200).json(
                     ResponseFormat.build(
                         clientes,
-                        "Listado de Clientes",
+                        "Listado de Clientes eliminados",
                         200,
                         "success"
                     )

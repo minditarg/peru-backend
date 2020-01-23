@@ -69,7 +69,7 @@ module.exports = {
                         )
                     );
                 }
-                return localidadesService
+                return localidad
                     .update({
                         nombre: req.body.nombre,
                     })
@@ -110,7 +110,7 @@ module.exports = {
                 );
             }
 
-            return localidadesService
+            return localidad
             .destroy()
             .then(() => res.status(200).json(
                ResponseFormat.build(

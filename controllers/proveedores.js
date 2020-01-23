@@ -82,23 +82,24 @@ module.exports = {
             );
     },
     listEliminados(req, res) {
-        return proveedor.findOne({
+        return proveedor.findAll({
             include: [{
                 model: servicios,
                 as: 'servicios'
             }],
             where: {
-                url: {
+                deletedAt: {
                     [Op.ne]: null
                 }
-            }
+            },
+            paranoid: false
         })
             .then(prov => {
                 if (!prov) {
                     return res.status(404).json(
                         ResponseFormat.build(
                             {},
-                            "No se encontró al proveedor",
+                            "No se encontraron proveedores",
                             404,
                             "error"
                         )
@@ -107,7 +108,7 @@ module.exports = {
                 return res.status(200).json(
                     ResponseFormat.build(
                         prov[0],
-                        "Listado de proveedor",
+                        "Listado de proveedores eliminados",
                         200,
                         "success"
                     )
@@ -131,7 +132,6 @@ module.exports = {
                 model: servicios,
                 as: 'servicios'
             }],
-            limit: 1,
             where: { tipo: 'Premium' }
         })
             .then(prov => {
@@ -147,7 +147,7 @@ module.exports = {
                 }
                 return res.status(200).json(
                     ResponseFormat.build(
-                        prov[0],
+                        prov,
                         "Listado de proveedor",
                         200,
                         "success"
@@ -382,7 +382,7 @@ module.exports = {
     },
     restore(req, res) {
         return proveedor
-            .findByPk(req.params.id)
+            .findByPk(req.params.id,  { paranoid: false } )
             .then(proveedor => {
                 if (!proveedor) {
                     return res.status(404).json(
@@ -395,9 +395,7 @@ module.exports = {
                     );
                 }
                 return proveedor
-                    .update({
-                        deletedAt: null
-                    })
+                    .restore()
                     .then(usuario => res.status(201).json(ResponseFormat.build(
                         usuario,
                         "Proveedor actualizado correctamente",

@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    deletedAt: {
+      type: DataTypes.DATE
+    }
   }, {});
   Cliente.associate = function(models) {
     Cliente.belongsTo(models.Usuario);
