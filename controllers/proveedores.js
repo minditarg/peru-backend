@@ -107,7 +107,7 @@ module.exports = {
                 }
                 return res.status(200).json(
                     ResponseFormat.build(
-                        prov[0],
+                        prov,
                         "Listado de proveedores eliminados",
                         200,
                         "success"
@@ -290,6 +290,47 @@ module.exports = {
                         } catch (err) {
                             console.error(err)
                         }
+                        return res.status(400).json(ResponseFormat.error(
+                            error.errors.map(err => err.message).join(", "),
+                            "Ocurrió un error cuando se actualizaba el Proveedor",
+                            "error"
+                        ));
+                    })
+            })
+            .catch(error => {
+                return res.status(400).json(ResponseFormat.error(
+                    error.errors.map(err => err.message).join(", "),
+                    "Ocurrió un error cuando se actualizaba el Proveedor",
+                    "error"
+                ));
+            })
+    },
+    updateTipo(req, res) {
+        return proveedor
+            .findByPk(req.params.id, {})
+            .then(prov => {
+                if (!prov) {
+                    return res.status(404).json(
+                        ResponseFormat.error(
+                            {},
+                            "No se encuentra el proveedor",
+                            404,
+                            "error"
+                        )
+                    );
+                }
+                
+                return prov
+                    .update({
+                        tipo: req.body.tipo != null ? req.body.tipo : 'Standar',
+                    })
+                    .then(proveedor => res.status(201).json(ResponseFormat.build(
+                        proveedor,
+                        "Proveedor actualizado correctamente",
+                        201,
+                        "success"
+                    )))
+                    .catch(error => {
                         return res.status(400).json(ResponseFormat.error(
                             error.errors.map(err => err.message).join(", "),
                             "Ocurrió un error cuando se actualizaba el Proveedor",
