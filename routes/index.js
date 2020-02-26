@@ -59,8 +59,9 @@ module.exports = (app) => {
     app.put('/api/proveedor/:id', [customMdw.ensureAuthenticated, uploadImage.single('foto')], proveedoresController.update);
     app.delete('/api/proveedor/:id', customMdw.ensureAuthenticated, proveedoresController.destroy);
     app.post('/api/proveedor/restaurar/:id', customMdw.ensureAuthenticated, proveedoresController.restore);
+    app.post('/api/proveedor/cambiarTipo/:id', customMdw.ensureAuthenticated, proveedoresController.updateTipo);
 
-
+    
     
     app.post('/api/loginWeb', loginController.loginWeb);
     app.post('/api/login', loginController.login);

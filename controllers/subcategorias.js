@@ -67,7 +67,7 @@ module.exports = {
         .findAll({
             include: [
                 {
-                    model: categoria, as : "categorias"
+                    model: categoria, as : "categoria"
                 }]
         })
         .then(subcategoria => {
@@ -92,7 +92,8 @@ module.exports = {
         })
         .catch(error => res.status(500).json(
             ResponseFormat.error(
-                error.errors.map(err => err.message).join(", "),
+                error,
+                //,error.errors.map(err => err.message).join(", "),
                 "Ocurrio un error al devolver el listado de Subcategorías",
                 500,
                 "error"
@@ -100,7 +101,7 @@ module.exports = {
         ));
     },
     destroy (req, res) {
-        return subcategoria
+         subcategoria
         .findById(req.params.id)
         .then(subcategoria => {
             if(!subcategoria) {
