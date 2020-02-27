@@ -18,6 +18,8 @@ const bcrypt = require('bcrypt');
 const User = require('./db/models').Usuario;
 const customMdw = require('./middleware/custom');
 
+var sslRootCAs = require('ssl-root-cas/latest')
+sslRootCAs.inject()
 //end login require
 
 var app = express();
