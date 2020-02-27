@@ -20,7 +20,8 @@ const customMdw = require('./middleware/custom');
 
 var sslRootCAs = require('ssl-root-cas/latest')
 sslRootCAs.inject()
-//end login require
+  .addFile('/config/SectigoRSADomainValidationSecureServerCA.crt')
+  .addFile('/config/USERTrustRSAAddTrustCA.crt');
 
 var app = express();
 var cors = require('cors');
