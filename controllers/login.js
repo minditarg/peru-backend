@@ -170,7 +170,7 @@ module.exports = {
     loginFacebookCallback: (req, res, next) => {
         passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
             if (error || !user) {
-                res.redirect("exp://127.0.0.1:19000?error=El usuario denegó el ingreso");
+                res.redirect(process.env.APP_URL + "?error=El usuario denegó el ingreso");
                 // return res.status(404).json(
                 //     ResponseFormat.build(
                 //         {},
@@ -201,7 +201,7 @@ module.exports = {
                         username: user.email
                     };
                     const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                    res.redirect("exp://127.0.0.1:19000?token=" + token + "&nuevo=" + nuevo);
+                    res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
 
                     // res.status(201).json(ResponseFormat.build(
                     //     token,
@@ -211,7 +211,7 @@ module.exports = {
                     // ));
                 })
                     .catch(err => {
-                        res.redirect("exp://127.0.0.1:19000?error=" + error.message);
+                        res.redirect(process.env.APP_URL + "?error=" + error.message);
                         // ResponseFormat.error(
                         //     error,
                         //     "Ocurrió un error cuando se creaba el Usuario",
