@@ -236,7 +236,7 @@ module.exports = {
     loginGoogleCallback: (req, res, next) => {
         passport.authenticate('google', { session: false, scope: ['email'] }, (error, user, info) => {
             if (error || !user) {
-                res.redirect("exp://127.0.0.1:19000?error=El usuario denegó el ingreso");
+                res.redirect(process.env.APP_URL + "?error=El usuario denegó el ingreso");
             } else {
                 var nuevo = false;
                 Usuario.findOne({ where: { providerId: user.id } }).then(usuario => {
@@ -259,10 +259,10 @@ module.exports = {
                         username: user.email
                     };
                     const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                    res.redirect("exp://127.0.0.1:19000?token=" + token + "&nuevo=" + nuevo);
+                    res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
                 })
                     .catch(err => {
-                        res.redirect("exp://127.0.0.1:19000?error=" + error.message);
+                        res.redirect(process.env.APP_URL + "?error=" + error.message);
                     })
             }
 
