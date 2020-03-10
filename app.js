@@ -22,6 +22,7 @@ var sslRootCAs = require('ssl-root-cas/latest')
 sslRootCAs.inject()
   .addFile('config/SectigoRSADomainValidationSecureServerCA.crt')
   .addFile('config/USERTrustRSAAddTrustCA.crt')
+  .addFile('config/comodorsaaddtrustca.crt')
   .addFile('config/AddTrustExternalCARoot.crt');
 
 var app = express();
