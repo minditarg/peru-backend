@@ -14,7 +14,10 @@ var path = require('path');
 const options = {
   key: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.key')),
   cert: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.crt')),
-  ca: fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt')),
+  ca: [
+    fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt')),
+    fs.readFileSync(path.join(__dirname,'../config/USERTrustRSAAddTrustCA.crt'))
+  ] 
 };
 
 /**
