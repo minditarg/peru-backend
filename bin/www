@@ -16,11 +16,9 @@ const options = {
   key: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.key')),
   cert: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.crt')),
   ca: [
-    fs.readFileSync(path.join(__dirname,'../config/SectigoECCOrganizationValidationSecureServerCA.crt')),
+    fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt')),
     fs.readFileSync(path.join(__dirname,'../config/USERTrustRSAAddTrustCA.crt')),
-    fs.readFileSync(path.join(__dirname,'../config/comodorsaaddtrustca.crt')),
-    fs.readFileSync(path.join(__dirname,'../config/AddTrustExternalCARoot.crt')),
-    fs.readFileSync(path.join(__dirname,'../config/SectigoECCDomainValidationSecureServerCA.crt'))
+    fs.readFileSync(path.join(__dirname,'../config/AddTrustExternalCARoot.crt'))
     
   ] 
 };

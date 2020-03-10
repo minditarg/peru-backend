@@ -18,13 +18,13 @@ const bcrypt = require('bcrypt');
 const User = require('./db/models').Usuario;
 const customMdw = require('./middleware/custom');
 
-var sslRootCAs = require('ssl-root-cas/latest')
-sslRootCAs.inject()
-  .addFile('config/SectigoRSADomainValidationSecureServerCA.crt')
-  .addFile('config/USERTrustRSAAddTrustCA.crt')
-  .addFile('config/comodorsaaddtrustca.crt')
-  .addFile('config/AddTrustExternalCARoot.crt')
-  .addFile('config/SectigoRSAOrganizationValidationSecureServerCA.crt');
+// var sslRootCAs = require('ssl-root-cas/latest')
+// sslRootCAs.inject()
+//   .addFile('config/SectigoRSADomainValidationSecureServerCA.crt')
+//   .addFile('config/USERTrustRSAAddTrustCA.crt')
+//   .addFile('config/comodorsaaddtrustca.crt')
+//   .addFile('config/AddTrustExternalCARoot.crt')
+//   .addFile('config/SectigoRSAOrganizationValidationSecureServerCA.crt');
   
 
 var app = express();
