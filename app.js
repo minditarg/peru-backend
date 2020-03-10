@@ -23,7 +23,9 @@ sslRootCAs.inject()
   .addFile('config/SectigoRSADomainValidationSecureServerCA.crt')
   .addFile('config/USERTrustRSAAddTrustCA.crt')
   .addFile('config/comodorsaaddtrustca.crt')
-  .addFile('config/AddTrustExternalCARoot.crt');
+  .addFile('config/AddTrustExternalCARoot.crt')
+  .addFile('config/SectigoRSAOrganizationValidationSecureServerCA.crt');
+  
 
 var app = express();
 var cors = require('cors');
