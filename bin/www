@@ -16,7 +16,7 @@ const options = {
   key: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.key')),
   cert: fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_com.crt')),
   ca:[ 
-    fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt')),
+    fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_comCA.crt')),
    // fs.readFileSync(path.join(__dirname,'../config/USERTrustRSAAddTrustCA.crt')),
     //fs.readFileSync(path.join(__dirname,'../config/AddTrustExternalCARoot.crt'))
   ]
