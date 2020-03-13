@@ -18,7 +18,8 @@ const options = {
   ca:[ 
     fs.readFileSync(path.join(__dirname,'../config/construccionesysoluciones_comCA.crt')),
     fs.readFileSync(path.join(__dirname,'../config/sslRoot.crt')),
-    fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt'))
+    fs.readFileSync(path.join(__dirname,'../config/SectigoRSADomainValidationSecureServerCA.crt')),
+    fs.readFileSync(path.join(__dirname,'../config/SectigoRSAExtendedValidationSecureServerCA.crt'))
   ]
 };
 
