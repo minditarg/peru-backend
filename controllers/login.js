@@ -209,28 +209,14 @@ module.exports = {
                         const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
                         res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
                 }
-                    // res.status(201).json(ResponseFormat.build(
-                    //     token,
-                    //     "Login correcto",
-                    //     201,
-                    //     "success"
-                    // ));
                 })
                     .catch(err => {
                         res.redirect(process.env.APP_URL + "?error=" + error.message);
-                        // ResponseFormat.error(
-                        //     error,
-                        //     "Ocurrió un error cuando se creaba el Usuario",
-                        //     500,
-                        //     "error"
-                        // )
                     })
             }
 
         })(req, res, next);
     },
-
-
 
 
     loginGoogle: (req, res, next) => {
@@ -255,17 +241,24 @@ module.exports = {
                             nombre: user.displayName,
                             avatar: user.photos[0].value,
                             email: user.emails[0].value,
+                        }).then(usuarioNuevo=>{
+                            const payload = {
+                                sub: usuarioNuevo.id,
+                                exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                                username: usuarioNuevo.email
+                            };
+                            const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+                            res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
                         })
                     } else {
-                        console.log("El usuario ya existe")
+                        const payload = {
+                            sub: usuario.id,
+                            exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
+                            username: usuario.email
+                        };
+                        const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
+                        res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
                     }
-                    const payload = {
-                        sub: user.id,
-                        exp: Date.now() + parseInt(process.env.JWT_LIFETIME),
-                        username: user.email
-                    };
-                    const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET, { algorithm: process.env.JWT_ALGORITHM });
-                    res.redirect(process.env.APP_URL + "?token=" + token + "&nuevo=" + nuevo);
                 })
                     .catch(err => {
                         res.redirect(process.env.APP_URL + "?error=" + error.message);
