@@ -30,13 +30,13 @@ module.exports = {
         return Cliente
             .create({
                 usuarioId: req.body.usuarioId,
-                telefono: req.body.telefono,
-                direccion: req.body.direccion,
+                // telefono: req.body.telefono,
+                // direccion: req.body.direccion,
             })
             .then(cliente => {
                 Usuario.findByPk(req.body.usuarioId)
                 .then(usuario => { 
-                    Usuario.update({
+                    usuario.update({
                         esCliente: true,
                     })
                 });
