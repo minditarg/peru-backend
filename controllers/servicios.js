@@ -57,7 +57,7 @@ module.exports = {
         let galeria = Array();
         let fotoPrincipal = null;
         let filesBack = req.files;
-        if (req.files != null) {
+        if (req.files) {
             fotoPrincipal = filesBack.shift();
             filesBack.forEach(element => {
                 galeria.push({ foto: element.filename });
@@ -148,7 +148,7 @@ module.exports = {
                 let galeria = Array();
                 let fotoPrincipal = null;
                 let filesBack = req.files;
-                if (req.files != null) {
+                if (req.files) {
                     fotoPrincipal = filesBack.shift();
                     filesBack.forEach(element => {
                         galeria.push({ foto: element.filename });
@@ -224,7 +224,9 @@ module.exports = {
                     })
                     .catch(error => {
                         try {
-                            fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                            if(req.file){
+                                fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                            }
                         } catch (err) {
                             console.error(err)
                         }
