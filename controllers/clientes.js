@@ -33,12 +33,21 @@ module.exports = {
                 telefono: req.body.telefono,
                 direccion: req.body.direccion,
             })
-            .then(cliente => res.status(201).json(ResponseFormat.build(
-                cliente,
-                "Cliente creado correctamente",
-                201,
-                "success"
-            )))
+            .then(cliente => {
+                Usuario.findByPk(req.body.usuarioId)
+                .then(usuario => { 
+                    Usuario.update({
+                        esCliente: true,
+                    })
+                });
+                 res.status(201).json(ResponseFormat.build(
+                    cliente,
+                    "Cliente creado correctamente",
+                    201,
+                    "success"
+                ))
+            }
+            )
             .catch(error => {
                 return res.status(400).json(ResponseFormat.error(
                     error.errors.map(err => err.message).join(", "),
