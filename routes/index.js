@@ -36,7 +36,7 @@ module.exports = (app) => {
     app.delete('/api/servicio/:id', customMdw.ensureAuthenticated, serviciosController.destroy);
     app.get('/api/servicios/listadoPorProveedor/:id', serviciosController.listadoPorProveedor);
     
-    app.post('/api/servicio/buscar', serviciosController.buscar);
+    app.post('/api/servicios/buscar', serviciosController.buscar);
 
     app.get('/api/categorias', categoriasController.list);
     app.post('/api/categorias', customMdw.ensureAuthenticated, categoriasController.create);
