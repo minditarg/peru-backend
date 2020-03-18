@@ -225,7 +225,9 @@ module.exports = {
             .catch(error => {
                 //eliminar foto adjuntada si hubo errores de alta
                 try {
-                    fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                    if(req.file){
+                        fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                    }
                 } catch (err) {
                     console.error(err)
                 }
@@ -286,7 +288,9 @@ module.exports = {
                     )))
                     .catch(error => {
                         try {
-                            fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                            if(req.file){
+                                fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);
+                            }
                         } catch (err) {
                             console.error(err)
                         }
