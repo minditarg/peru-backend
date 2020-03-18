@@ -232,7 +232,7 @@ module.exports = {
                     console.error(err)
                 }
                 return res.status(400).json(ResponseFormat.error(
-                    error.errors.map(err => err.message).join(", "),
+                    error.errors? error.errors.map(err => err.message).join(", ") : error,
                     "Ocurrió un error cuando se creaba el Proveedor",
                     "error"
                 ));
