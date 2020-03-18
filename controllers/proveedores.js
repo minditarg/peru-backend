@@ -1,5 +1,6 @@
 const proveedor = require('../db/models').Proveedor;
 const servicios = require('../db/models').Servicio;
+const usuarios = require('../db/models').Usuario;
 const categorias = require('../db/models').Categoria;
 const db = require('../db/models').db;
 const ResponseFormat = require('../core').ResponseFormat;
@@ -216,14 +217,23 @@ module.exports = {
                 foto: req.file ? req.file.filename : null,
                 usuarioId: req.body.usuarioId
             })
-            .then(proveedor => res.status(201).json(ResponseFormat.build(
-                proveedor,
-                "Proveedor creado correctamente",
-                201,
-                "success"
-            )))
+            // si ingreso por red social no se sabe si es cliente o proveedor
+            .then(proveedor => {
+                usuarios.findByPk(req.body.usuarioId)
+                    .then(usuario => { 
+                        usuario.update({
+                            esCliente: false,
+                        })
+                });
+               return res.status(201).json(ResponseFormat.build(
+                    proveedor,
+                    "Proveedor creado correctamente",
+                    201,
+                    "success"
+                ));
+            }
+            )
             .catch(error => {
-                //eliminar foto adjuntada si hubo errores de alta
                 try {
                     if(req.file){
                         fs.unlinkSync(process.env.PATH_FILES_UPLOAD + req.file.filename);

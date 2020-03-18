@@ -171,14 +171,6 @@ module.exports = {
         passport.authenticate('facebook', { session: false, scope: ['email'] }, (error, user, info) => {
             if (error || !user) {
                 res.redirect(process.env.APP_URL + "?error=El usuario denegó el ingreso");
-                // return res.status(404).json(
-                //     ResponseFormat.build(
-                //         {},
-                //         error.message,
-                //         404,
-                //         "error"
-                //     )
-                // )
             } else {
                 var nuevo = false;
                 Usuario.findOne({ where: { providerId: user.id } }).then(usuario => {
