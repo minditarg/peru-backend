@@ -212,7 +212,7 @@ module.exports = {
                 descripcion: req.body.descripcion,
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
-                localidadId: req.body.localidadId,
+                localidadId: req.body.localidadId ? req.body.localidadId : null ,
                 foto: req.file ? req.file.filename : null,
                 usuarioId: req.body.usuarioId
             })
@@ -274,7 +274,7 @@ module.exports = {
                         email: req.body.email,
                         descripcion: req.body.descripcion,
                         direccion: req.body.direccion,
-                        localidadId: req.body.localidadId,
+                        localidadId: req.body.localidadId ? req.body.localidadId : null,
                         telefono: req.body.telefono,
                         tipo: req.body.tipo != null ? req.body.tipo : 'Standar',
                         foto: foto,
