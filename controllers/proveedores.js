@@ -213,7 +213,7 @@ module.exports = {
                 direccion: req.body.direccion,
                 telefono: req.body.telefono,
                 localidadId: req.body.localidadId,
-                foto: req.file != null ? req.file.filename : null,
+                foto: req.file ? req.file.filename : null,
                 usuarioId: req.body.usuarioId
             })
             .then(proveedor => res.status(201).json(ResponseFormat.build(
@@ -258,7 +258,7 @@ module.exports = {
                     );
                 }
                 let foto = prov.foto;
-                if (req.file != null) {
+                if (req.file) {
                     try {
                         fs.unlinkSync(process.env.PATH_FILES_UPLOAD + prov.foto);
                     } catch (err) {
