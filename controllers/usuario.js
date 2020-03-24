@@ -74,23 +74,23 @@ module.exports = {
                             subject: 'Recuperar contraseña',
                             text: 'Este es el código de recuperación que debe utilizar: ' + token
                         };
-                        // transporter.sendMail(mailOptions, function (error, info) {
-                        //     if (error) {
-                        //         return res.status(400).json(ResponseFormat.error(
-                        //             error,
-                        //             "Ocurrió un error cuando se enviaba el email",
-                        //             "error"
-                        //         ));
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                return res.status(400).json(ResponseFormat.error(
+                                    error,
+                                    "Ocurrió un error cuando se enviaba el email",
+                                    "error"
+                                ));
 
-                        //     } else {
-                        //         return res.status(201).json(ResponseFormat.build(
-                        //             cliente,
-                        //             "Código enviado correctamente al email: " + req.email,
-                        //             201,
-                        //             "success"
-                        //         ));
-                        //     }
-                        // })
+                            } else {
+                                return res.status(201).json(ResponseFormat.build(
+                                    cliente,
+                                    "Código enviado correctamente al email: " + req.email,
+                                    201,
+                                    "success"
+                                ));
+                            }
+                        })
                         return res.status(201).json(ResponseFormat.build(
                             cliente,
                             "Código enviado correctamente al email: " + req.email,
